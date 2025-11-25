@@ -22,6 +22,8 @@ interface=$1
 # CIDR associated with supplied interface
 cidr=$(eval bash ../scripts/cidr.sh $interface)
 cidr_size=${#cidr} # should be <= 18 for valid CIDR value
+echo "CIDR on interface \"$interface\" : $cidr"
+
 
 # check the number of arguments
 # ensure that exactly 1 argument is supplied

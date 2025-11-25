@@ -18,7 +18,7 @@ fi
 
 # interface
 iface=$1
-printf "supplied interface : $iface \n"
+# printf "supplied interface : $iface \n"
 
 # fetch the CIDR of supplied interface,
 # using ip command
