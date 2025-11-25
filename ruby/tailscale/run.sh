@@ -31,9 +31,12 @@ if [ $cidr_size -gt 18 ]; then
   exit 1 # Exit script after printing help
 fi
 
+echo "Will Add Subnet : $cidr to tailscale to enable accessing devices connected to host's network"
+
 # authkey also captured from arguments
 authkey=$2
 
+echo "Starting Tailscale..."
 # bring up the tailscale docker compose
 # with CIDR of supplied interface in SubNet routes
 # this will enable accessing devices connected to host OS
