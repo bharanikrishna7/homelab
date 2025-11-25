@@ -2,22 +2,28 @@
 version: "3.7"
 services:
   ts-actual-server:
+    # refer here for additional parameters -> https://tailscale.com/kb/1282/docker
     image: tailscale/tailscale:latest
     ports:
       # This line makes Actual available at port 5006 of the device you run the server on,
       # i.e. http://localhost:5006. You can change the first number to change the port, if you want.
       - '5006:5006'
     container_name: tailscale
-    hostname: tailscale-ruby
+    hostname: ${HOST?-Hostname for the container}
     environment:
+      # Authkey required to login to tailscale
       - TS_AUTHKEY=${TAILSCALE_AUTHKEY}
-      - TS_EXTRA_ARGS=--advertise-tags=tag:container
+      # Tailscale directory
       - TS_STATE_DIR=/var/lib/tailscale
+      # Tailscale should use run in user space and not use kernel space
       - TS_USERSPACE=true
     volumes:
+      # Map local path to path in container
       - /var/lib/tailscale:/var/lib/tailscale
     devices:
+      # Tunnel from host to container
       - /dev/net/tun:/dev/net/tun
     cap_add:
       - net_admin
+    # Restart settings
     restart: unless-stopped
