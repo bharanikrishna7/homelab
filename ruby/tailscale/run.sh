@@ -10,7 +10,7 @@ help() {
 
 # check the number of arguments
 # ensure that exactly 1 argument is supplied
-if [ $# -ne 3 ]; then
+if [ $# -ne 2 ]; then
   # code to be executed if the condition is true
   printf "this script requires exactly one parameter to be supplied, but supplied : $# \n"
   help
