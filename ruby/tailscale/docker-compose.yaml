@@ -18,7 +18,7 @@ services:
       # Tailscale should use run in user space and not use kernel space
       - TS_USERSPACE=true
       # Tailscale routes to be exposed to connect to host and other devices on LAN
-      - TS_ROUTES="192.168.86.0/24,10.0.0.0/16"
+      - TS_ROUTES=${TS_ROUTES:?Sub-net associated with host network's router. Check "../scripts/cidr.sh"}
     volumes:
       # Map local path to path in container
       - /var/lib/tailscale:/var/lib/tailscale
