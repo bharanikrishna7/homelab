@@ -22,11 +22,11 @@ printf "supplied interface : $iface \n"
 
 # fetch the CIDR of supplied interface,
 # using ip command
-output = $(eval ip -4 addr show $iface | grep inet | awk '{print $2}')
-part1  = $(eval echo $output | cut -d '.' -f1)
-part2  = $(eval echo $output | cut -d '.' -f2)
-part3  = $(eval echo $output | cut -d '.' -f3)
-part5  = $(eval echo $output | cut -d '/' -f2)
+output=$(eval ip -4 addr show $iface | grep inet | awk '{print $2}')
+part1=$(eval echo $output | cut -d '.' -f1)
+part2=$(eval echo $output | cut -d '.' -f2)
+part3=$(eval echo $output | cut -d '.' -f3)
+part5=$(eval echo $output | cut -d '/' -f2)
 
-cidr = "$part1.$part2.$part3.0/$part5"
+cidr="$part1.$part2.$part3.0/$part5"
 echo $cidr
