@@ -10,14 +10,15 @@ help() {
 
 # check the number of arguments
 # ensure that exactly 1 argument is supplied
-if (($# != 2)); then
-  printf 'this script requires exactly one parameter to be supplied' "$#"
-  help()
+if [ $# -ne 1 ]; then
+  # code to be executed if the condition is true
+  printf "this script requires exactly one parameter to be supplied, but supplied : $# \n"
+  help
 fi
 
 # interface
 iface=$1
-printf "supplied interface : $iface"
+printf "supplied interface : $iface \n"
 
 # fetch the CIDR of supplied interface,
 # using ip command
