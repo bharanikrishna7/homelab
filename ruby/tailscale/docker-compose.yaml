@@ -1,7 +1,7 @@
 ---
 version: "3.7"
 services:
-  ts-actual-server:
+  tailscale:
     # refer here for additional parameters -> https://tailscale.com/kb/1282/docker
     image: tailscale/tailscale:latest
     ports:
@@ -17,15 +17,17 @@ services:
       - TS_STATE_DIR=/var/lib/tailscale
       # Tailscale should use run in user space and not use kernel space
       - TS_USERSPACE=true
-      # Tailscale routes to be exposed to connect to host and other devices on LAN
-      - TS_ROUTES=${TS_ROUTES:?Sub-net associated with host network's router. Check "../scripts/cidr.sh"}
     volumes:
       # Map local path to path in container
+      - /var/lib:/var/lib
       - /var/lib/tailscale:/var/lib/tailscale
     devices:
       # Tunnel from host to container
       - /dev/net/tun:/dev/net/tun
     cap_add:
-      - net_admin
+      - NET_ADMIN
+      - NET_RAW
+    # use host network
+    network_mode: host
     # Restart settings
     restart: unless-stopped
