@@ -1,5 +1,3 @@
----
-version: "3.7"
 services:
   tailscale:
     # refer here for additional parameters -> https://tailscale.com/kb/1282/docker
@@ -19,6 +17,7 @@ services:
       - TS_USERSPACE=true
     volumes:
       # Map local path to path in container
+      - /var/lib:/var/lib
       - /var/lib/tailscale:/var/lib/tailscale
     devices:
       # Tunnel from host to container
