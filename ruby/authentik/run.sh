@@ -9,18 +9,11 @@ help() {
 }
 
 # if more than 1 argument is supplied
-if [ $# -gt 1]; then
+if [ $# -gt 1 ]; then
   echo "This script expects upto 1 argument, but supplied $#"
   help
   exit 1
 fi
-
-if [ ! -f ./.env ]; then
-  echo ".env file not found, creating it..."
-  ./setup.sh create
-  echo ".env file created..."
-fi
-
 
 # if exactly 1 argument is supplied
 if [ $# -eq 1 ]; then
@@ -37,6 +30,13 @@ if [ $# -eq 1 ]; then
     help
     exit 1
   fi
+fi
+
+# ensure .env file is present before we run docker compose commands
+if [ ! -f ./.env ]; then
+  echo ".env file not found, creating it..."
+  ./setup.sh create
+  echo ".env file created..."
 fi
 
 # bring docker up
