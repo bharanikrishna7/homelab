@@ -15,6 +15,13 @@ if [ $# -gt 1]; then
   exit 1
 fi
 
+if [ ! -f ./.env ]; then
+  echo ".env file not found, creating it..."
+  ./setup.sh create
+  echo ".env file created..."
+fi
+
+
 # if exactly 1 argument is supplied
 if [ $# -eq 1 ]; then
   # check if mode is help
