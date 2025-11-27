@@ -41,4 +41,4 @@ fi
 
 # bring docker up
 docker compose pull
-docker compose up -detach
+docker compose up --detach

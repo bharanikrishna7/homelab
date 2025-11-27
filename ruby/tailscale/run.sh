@@ -21,5 +21,6 @@ authkey=$1
 
 # bring up the tailscale docker compose
 echo "Starting Tailscale..."
+docker compose pull
 AUTHKEY=$authkey HOSTNAME=$HOSTNAME docker compose up --detach
 echo "Tailscale is up..."
