@@ -1,15 +1,32 @@
+# Docker Compose configuration for setting up a Authentik and it's dependencies as containers
+#
+# This configuration pulls the following images from the specified repository
+# - postgres : 16
+# - authentik/server : 2025.10.2
+# - authentik/worker : 2025.10.2
 # refer for additional details - https://docs.goauthentik.io/install-config/install/docker-compose/
+
 services:
-  # postgresql container which authentik uses 
-  # for storing configuration and other data
+
+  # Postgresql Container for storing authentik data
   postgresql:
-    container_name: authentik-postgres
+    image: docker.io/library/postgres:16-alpine                   # Pull the Postgres 16 image in alpine based container
+    container_name: authentik-postgres                            # Name of the Postgres Authentik container
+    hostname: authentik-postgres                                  # Hostname for the Posgtres Authentik container
+
+    restart: unless-stopped                                       # Restart the container unless manually stopped
+    
+    # Environment file to scan variables
     env_file:
     - .env
+    
+    # Environment variables for Postgres
     environment:
       POSTGRES_DB: ${PG_DB:-authentik}
       POSTGRES_PASSWORD: ${PG_PASS:?database password required}
       POSTGRES_USER: ${PG_USER:-authentik}
+    
+    # Health check configuration to verify Postgres readiness
     healthcheck:
       interval: 30s
       retries: 5
@@ -18,54 +35,85 @@ services:
       - CMD-SHELL
       - pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}
       timeout: 5s
-    image: docker.io/library/postgres:16-alpine
-    restart: unless-stopped
+
+    # Volume configuration for postgres data persistence
     volumes:
     - /var/lib/authentik/postgres:/var/lib/postgresql
     - /var/lib/authentik/postgres/data:/var/lib/postgresql/data
-  # authentik server container
+
+  
+  # Authentik Server Container
   server:
-    container_name: authentik
-    hostname: ${HOST}
+    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2025.10.2}   # Pull the Authentik Server image
+    container_name: authentik                                                           # Name of the Authentik Server container
+    hostname: ${HOST}                                                                   # Hostname of the Authentik Server container
+    
+    restart: unless-stopped                                                             # Restart the container unless manually stopped
+    
+    # Command to run Authentik Server
     command: server
+
+    # Depencencies of Authentik Server Container
     depends_on:
-      postgresql:
-        condition: service_healthy
+      postgresql:                                                                       # Depends on Postgres Server's
+        condition: service_healthy                                                      # health check to be successful
+    
+    # Environment file to scan variables
     env_file:
     - .env
+
+    # Environment variables for Authentik Server
     environment:
       AUTHENTIK_POSTGRESQL__HOST: postgresql
       AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
       AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
       AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
       AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY:?secret key required}
-    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2025.10.2}
+    
+    # Ports to be forwarded from container to host
     ports:
-    - ${COMPOSE_PORT_HTTP:-9000}:9000
-    - ${COMPOSE_PORT_HTTPS:-9443}:9443
-    restart: unless-stopped
+    - ${COMPOSE_PORT_HTTP:-9000}:9000                                                   # Authentik Server Web Interface Port (HTTP)
+    - ${COMPOSE_PORT_HTTPS:-9443}:9443                                                  # Authentik Server Web Interface Port (HTTPS)
+    
+    # Volume configuration for authentik media and template synchronization
     volumes:
     - /var/lib/authentik/media:/media
     - /var/lib/authentik/custom-templates:/templates
-  # authentik worker container responsible
-  # for performing background tasks
+
+
+  # Authentik Worker Container 
+  # responsible for performing background tasks
   worker:
-    container_name: authentik-worker
+    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2025.10.2}   # Pull the Authentik Server image
+    container_name: authentik-worker                                                    # Name of Authentik Worker container
+    hostname: authentik-worker                                                          # Hostname of the Authentik Worker container
+
+    restart: unless-stopped                                                             # Restart the container unless manually stopped
+    
+    # Command to run Authentik Worker
     command: worker
+
+    # Depencencies of Authentik Worker Container
     depends_on:
-      postgresql:
-        condition: service_healthy
+      postgresql:                                                                       # Depends on Postgres Server's
+        condition: service_healthy                                                      # health check to be successful
+    
+    # Environment file to scan variables
     env_file:
     - .env
+    
+    # Environment variables for Authentik Worker
     environment:
       AUTHENTIK_POSTGRESQL__HOST: postgresql
       AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
       AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
       AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
       AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY:?secret key required}
-    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2025.10.2}
-    restart: unless-stopped
+    
+    # Define the user which will be setting up container during docker compose up
     user: root
+    
+    # Volume configuration for authentik media, certificates & template synchronization
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock
     - /var/lib/authentik/media:/media

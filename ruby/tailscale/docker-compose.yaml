@@ -1,31 +1,97 @@
+# Docker Compose configuration for setting up a Tailscale container
+#
+# This configuration pulls the latest Tailscale image from the specified repository
+# and includes options for logging, automatic updates using Watchtower, health checks, and volume mounting.
+
 services:
+  
+  # Tailscale Container
+  # refer here for additional parameters -> https://tailscale.com/kb/1282/docker
   tailscale:
-    # refer here for additional parameters -> https://tailscale.com/kb/1282/docker
-    image: tailscale/tailscale:latest
+    image: tailscale/tailscale:latest                                     # Pull the latest version of the Tailscale image
+    container_name: tailscale                                             # Name of the tailscale container
+    hostname: ${HOST}                                                     # Hostname for the tailscale container (using actual host's HOSTNAME)
+
+    restart: unless-stopped                                               # Restart the container unless manually stopped
+    
+    # use host network
+    network_mode: host                                                    # Use the host network (no isolation between host and container)
+
+    # Ports to be forwarded to host from container
     ports:
       # This line makes Actual available at port 5006 of the device you run the server on,
       # i.e. http://localhost:5006. You can change the first number to change the port, if you want.
       - '5006:5006'
-    container_name: tailscale
-    hostname: ${HOST}
+
+    # Environment variables for Tailscale service
     environment:
-      # Authkey required to login to tailscale
-      - TS_AUTHKEY=${TAILSCALE_AUTHKEY}
-      # Tailscale directory
-      - TS_STATE_DIR=/var/lib/tailscale
-      # Tailscale should use run in user space and not use kernel space
-      - TS_USERSPACE=true
+      - TS_AUTHKEY=${TAILSCALE_AUTHKEY:?tailscale auth key required}      # Authkey required to login to tailscale
+      - TS_STATE_DIR=/var/lib/tailscale                                   # Tailscale directory
+      - TS_USERSPACE=true                                                 # Tailscale should use run in user space and not use kernel space
+                                                                          #   - if userspace true, cannot make outbound connections from tailscale
+    
+    # Volume configuration for tailscale data + configuration directory
     volumes:
-      # Map local path to path in container
       - /var/lib:/var/lib
       - /var/lib/tailscale:/var/lib/tailscale
+
+    # Devices exposed from host to the container
     devices:
-      # Tunnel from host to container
-      - /dev/net/tun:/dev/net/tun
+      - /dev/net/tun:/dev/net/tun                                         # Tunnel from host to container
+    
+    # Additional container capabilities
     cap_add:
       - NET_ADMIN
       - NET_RAW
-    # use host network
-    network_mode: host
-    # Restart settings
-    restart: unless-stopped
+
+  # Tailscale health check container
+  healthcheck:
+    image: laitco/tailscale-healthcheck:1.3.1                             # Pull 1.3.1 build of latico's healthcheck image
+    container_name: tailscale-healthcheck                                 # Name of the tailscale healthcheck container
+    hostname: ${HOST}                                                     # Hostname of the tailscale healthcheck container (using actual host's HOSTNAME)
+
+    restart: unless-stopped                                               # Restart the container unless manually stopped
+
+    # Dependencies for Tailscale Healthcheck
+    depends_on:
+      tailscale:                                                          # Wait for tailscale container
+        condition: service_started                                        # to start
+        required: true
+
+    # Ports to be forwarded to host from container
+    ports:
+      - '5000:5000'                                                       # The port the application runs on
+    
+    # Environment variables for Tailscale Healthcheck
+    environment:
+      TAILNET_DOMAIN:                                                     # The Tailscale tailnet domain.
+      AUTH_TOKEN:                                                         # The Tailscale API token
+      ONLINE_THRESHOLD_MINUTES: 5                                         # The threshold in minutes to determine online health
+      KEY_THRESHOLD_MINUTES: 1440                                         # The threshold in minutes to determine key expiry health
+      GLOBAL_HEALTHY_THRESHOLD: 100                                       # The threshold for total unhealthy
+      GLOBAL_ONLINE_HEALTHY_THRESHOLD: 100                                # The threshold for total online health
+      GLOBAL_KEY_HEALTHY_THRESHOLD: 100                                   # The threshold for total key health
+      GLOBAL_UPDATE_HEALTHY_THRESHOLD: 100                                # The threshold for total update health
+      UPDATE_HEALTHY_IS_INCLUDED_IN_HEALTH: NO                            # Whether update health is included in overall health status
+      DISPLAY_SETTINGS_IN_OUTPUT: NO                                      # Whether to include configuration settings in API output
+      PORT: 5000                                                          # The port the application runs on
+      TIMEZONE: IST                                                       # The timezone for `lastSeen` adjustments
+      CACHE_ENABLED: YES                                                  # Enable in-memory caching of the Tailscale devices API response
+      CACHE_TTL_SECONDS: 60                                               # Cache time-to-live in seconds
+      CACHE_BACKEND: MEMORY                                               # Cache backend: FILE (shared on host), MEMORY (per-process), or REDIS (shared across instances)
+      CACHE_FILE_PATH: '/tmp/tailscale-healthcheck-cache.json'            # File path when CACHE_BACKEND=FILE (default), can be set to empty when using other cache backend
+      RATE_LIMIT_ENABLED: YES                                             # Enable rate limiting
+      RATE_LIMIT_PER_IP: 100                                              # Integer requests per minute per client IP. Default 100. 0 disables
+      RATE_LIMIT_GLOBAL: 200                                              # Optional integer requests per minute across all clients/endpoints. Empty/0 disables
+      RATE_LIMIT_HEADERS_ENABLED: YES                                     # Include standard rate-limit headers when Flask-Limiter is active
+      RATE_LIMIT_STORAGE_URL: '/tmp/tailscale-healthcheck-ratelimit.json' # Optional storage for shared enforcement across processes/instances
+      INCLUDE_OS: ''                                                      # Filter to include only specific operating systems (comma-separated, wildcards allowed)
+      EXCLUDE_OS: ''                                                      # Filter to exclude only specific operating systems (comma-separated, wildcards allowed)
+      INCLUDE_IDENTIFIER: ''                                              # Filter to include only specific devices by identifier (comma-separated, wildcards allowed)
+      EXCLUDE_IDENTIFIER: ''                                              # Filter to exclude only specific devices by identifier (comma-separated, wildcards allowed)
+      INCLUDE_TAGS: ''                                                    # Filter to include only specific tags by identifier (comma-separated, wildcards allowed)
+      EXCLUDE_TAGS: ''                                                    # Filter to exclude only specific tags by identifier (comma-separated, wildcards allowed)
+      INCLUDE_IDENTIFIER_UPDATE_HEALTHY: ''                               # Filter to include only specific devices by identifier for update health (comma-separated, wildcards allowed)
+      EXCLUDE_IDENTIFIER_UPDATE_HEALTHY: ''                               # Filter to exclude only specific devices by identifier for update health (comma-separated, wildcards allowed)
+      INCLUDE_TAG_UPDATE_HEALTHY: ''                                      # Filter to include only specific devices by tags for update health (comma-separated, wildcards allowed)
+      EXCLUDE_TAG_UPDATE_HEALTHY: ''                                      # Filter to exclude only specific devices by tags for update health (comma-separated, wildcards allowed)

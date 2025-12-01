@@ -33,6 +33,19 @@ elif [ $1 == "create" ]; then
   echo "AUTHENTIK_SECRET_KEY=$(openssl rand -base64 60 | tr -d '\n')" >> .env
   # enable error reporting
   echo "AUTHENTIK_ERROR_REPORTING__ENABLED=true" >> .env
+  # SMTP Host Emails are sent to
+  # echo "AUTHENTIK_EMAIL__HOST=localhost" >> .env
+  # echo "AUTHENTIK_EMAIL__PORT=25" >> .env
+  # Optionally authenticate (don't add quotation marks to your password)
+  # echo "AUTHENTIK_EMAIL__USERNAME=" >> .env
+  # echo "AUTHENTIK_EMAIL__PASSWORD=" >> .env
+  # Use StartTLS
+  # echo "AUTHENTIK_EMAIL__USE_TLS=false" >> .env
+  # Use SSL
+  # echo "AUTHENTIK_EMAIL__USE_SSL=false" >> .env
+  # echo "AUTHENTIK_EMAIL__TIMEOUT=10" >> .env
+  # Email address authentik will send from, should have a correct @domain
+  # echo "AUTHENTIK_EMAIL__FROM=authentik@chekuri.org" >> .env
   echo "setup complete..."
   exit 0
 else
