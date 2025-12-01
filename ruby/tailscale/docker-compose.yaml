@@ -57,6 +57,9 @@ services:
 
     restart: unless-stopped                                               # Restart the container unless manually stopped
 
+    # use host network
+    network_mode: host                                                    # Use the host network (no isolation between host and container)
+
     # Dependencies for Tailscale Healthcheck
     depends_on:
       tailscale:                                                          # Wait for tailscale container
