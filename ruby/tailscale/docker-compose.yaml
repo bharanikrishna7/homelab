@@ -53,7 +53,7 @@ services:
   healthcheck:
     image: laitco/tailscale-healthcheck:1.3.1                             # Pull 1.3.1 build of latico's healthcheck image
     container_name: tailscale-healthcheck                                 # Name of the tailscale healthcheck container
-    hostname: ${HOSTNAME}                                                 # Hostname of the tailscale healthcheck container (using actual host's HOSTNAME)
+    hostname: ${HOST}                                                     # Hostname of the tailscale healthcheck container (using actual host's HOSTNAME)
 
     restart: unless-stopped                                               # Restart the container unless manually stopped
 
