@@ -12,7 +12,7 @@ services:
   postgresql:
     image: docker.io/library/postgres:16-alpine                   # Pull the Postgres 16 image in alpine based container
     container_name: authentik-postgres                            # Name of the Postgres Authentik container
-    hostname: authentik-postgres                                  # Hostname for the Posgtres Authentik container
+    hostname: ${HOST}                                             # Hostname for the Posgtres Authentik container
 
     restart: unless-stopped                                       # Restart the container unless manually stopped
     
@@ -86,7 +86,7 @@ services:
   worker:
     image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2025.10.2}   # Pull the Authentik Server image
     container_name: authentik-worker                                                    # Name of Authentik Worker container
-    hostname: authentik-worker                                                          # Hostname of the Authentik Worker container
+    hostname: ${HOST}                                                                   # Hostname of the Authentik Worker container
 
     restart: unless-stopped                                                             # Restart the container unless manually stopped
     

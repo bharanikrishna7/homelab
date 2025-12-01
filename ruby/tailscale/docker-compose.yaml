@@ -43,6 +43,11 @@ services:
     cap_add:
       - NET_ADMIN
       - NET_RAW
+    
+    # Container labels for additional metadata
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"                      # Enable automatic updates with Watchtower
+    
 
   # Tailscale health check container
   healthcheck:
