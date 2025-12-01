@@ -9,7 +9,7 @@ services:
   cloudflare-tunnel:
     image: cloudflare/cloudflared:latest              # Pull the latest version of the Cloudflare Tunnel image
     container_name: cloudflared                       # Name of the Cloudflare Tunnel container
-    hostname: ${HOST}                                 # Hostname for the Cloudflare Tunnel container
+    hostname: ${HOSTNAME}                             # Hostname for the Cloudflare Tunnel container
 
     restart: unless-stopped                           # Restart the container unless manually stopped
 
