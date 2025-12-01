@@ -41,4 +41,4 @@ fi
 
 # bring docker up
 docker compose pull
-HOSTNAME=$HOSTNAME docker compose up --detach
+HOST=$HOSTNAME docker compose up --detach

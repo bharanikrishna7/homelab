@@ -10,7 +10,7 @@ services:
   tailscale:
     image: tailscale/tailscale:latest                                     # Pull the latest version of the Tailscale image
     container_name: tailscale                                             # Name of the tailscale container
-    hostname: ${HOSTNAME}                                                 # Hostname for the tailscale container (using actual host's HOSTNAME)
+    hostname: ${HOST}                                                     # Hostname for the tailscale container
 
     restart: unless-stopped                                               # Restart the container unless manually stopped
     
