@@ -1,0 +1,42 @@
+# Docker Compose configuration for setting up a Proxmox Backup Server container
+
+services:
+  
+  # PBS Container
+  # refer here for additional parameters -> https://tailscale.com/kb/1282/docker
+  proxmoxbackupserver:
+    image: ayufan/proxmox-backup-server:v4.0.21-1                         # Pull the latest version of the Tailscale image
+    container_name: proxmoxbackupserver0                                  # Name of the tailscale container
+    hostname: ${HOST}                                                     # Hostname for the tailscale container
+    mem_limit: 3G                                                         # Maximum memory limit for the container
+    
+    restart: unless-stopped                                               # Restart the container unless manually stopped
+    
+    # Ports to be forwarded to host from container
+    ports:
+      # Forward proxmox backup server container port 8007
+      # to host network
+      - '8007:8007'
+
+    # Environment variables for Tailscale service
+    environment:
+      - TS_AUTHKEY=${TAILSCALE_AUTHKEY:?tailscale auth key required}      # Authkey required to login to tailscale
+      - TS_STATE_DIR=/var/lib/tailscale                                   # Tailscale directory
+      - TS_USERSPACE=true                                                 # Tailscale should use run in user space and not use kernel space
+                                                                          #   - if userspace true, cannot make outbound connections from tailscale
+    
+    # Volume configuration for tailscale data + configuration directory
+    volumes:
+      - /media/pbs/etc:/etc/proxmox-backup
+      - /media/pbs/logs:/var/log/proxmox-backup
+      - /media/pbs/lib:/var/lib/proxmox-backup
+    
+    # Additional container capabilities
+    cap_add:
+      - SYS_RAWIO                                                         # smartctl support
+      - NET_ADMIN
+      - NET_RAW
+    
+    # Container labels for additional metadata
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"                      # Enable automatic updates with Watchtower
