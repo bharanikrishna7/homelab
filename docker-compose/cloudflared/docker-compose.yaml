@@ -10,7 +10,6 @@ services:
     image: cloudflare/cloudflared:latest              # Pull the latest version of the Cloudflare Tunnel image
     container_name: cloudflared                       # Name of the Cloudflare Tunnel container
     hostname: ${HOST}                                 # Hostname for the Cloudflare Tunnel container
-    mem_limit: 1g                                     # Maximum memory limit for the container
     
     restart: unless-stopped                           # Restart the container unless manually stopped
 
@@ -53,3 +52,16 @@ services:
     # Container labels for additional metadata
     labels:
       - "com.centurylinklabs.watchtower.enable=true"  # Enable automatic updates with Watchtower
+
+    # Deployment (docker compose up) settings
+    deploy:
+      # Set resource limits
+      resources:
+        # maximum resource limits
+        limits:
+          cpus: '2'
+          memory: 256m
+        # minimum resource limits
+        reservations:
+          cpus: '0.2'
+          memory: 16m

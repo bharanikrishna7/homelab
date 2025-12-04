@@ -13,7 +13,6 @@ services:
     image: docker.io/library/postgres:16-alpine                   # Pull the Postgres 16 image in alpine based container
     container_name: authentik-postgres                            # Name of the Postgres Authentik container
     hostname: ${PGHOST?-set fqdn for authentik postgres}          # Hostname for the Posgtres Authentik container
-    mem_limit: 3g                                                 # Maximum memory limit for the container
     
     restart: unless-stopped                                       # Restart the container unless manually stopped
     
@@ -46,13 +45,24 @@ services:
     cap_add:
       - SYS_NICE                                                                        # container should get some more processing time
 
+    # Deployment (docker compose up) settings
+    deploy:
+      # Set resource limits
+      resources:
+        # maximum resource limits
+        limits:
+          cpus: '1'
+          memory: 2048m
+        # minimum resource limits
+        reservations:
+          cpus: '0.1'
+          memory: 32m
   
   # Authentik Server Container
   server:
     image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2025.10.2}   # Pull the Authentik Server image
     container_name: authentik                                                           # Name of the Authentik Server container
     hostname: ${SRVHOST?-set fqdn for authentik server}                                 # Hostname of the Authentik Server container
-    mem_limit: 4g                                                                       # Maximum memory limit for the container
     
     restart: unless-stopped                                                             # Restart the container unless manually stopped
     
@@ -90,6 +100,19 @@ services:
     cap_add:
       - SYS_NICE                                                                        # container should get some more processing time
 
+    # Deployment (docker compose up) settings
+    deploy:
+      # Set resource limits
+      resources:
+        # maximum resource limits
+        limits:
+          cpus: '1'
+          memory: 2048m
+        # minimum resource limits
+        reservations:
+          cpus: '0.1'
+          memory: 64m
+
 
   # Authentik Worker Container 
   # responsible for performing background tasks
@@ -97,8 +120,7 @@ services:
     image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2025.10.2}   # Pull the Authentik Server image
     container_name: authentik-worker                                                    # Name of Authentik Worker container
     hostname: ${WRKHOST?-set fqdn for authentik worker}                                 # Hostname of the Authentik Worker container
-    mem_limit: 3g                                                                       # Maximum memory limit for the container
-
+    
     restart: unless-stopped                                                             # Restart the container unless manually stopped
     
     # Command to run Authentik Worker
@@ -134,3 +156,16 @@ services:
     # Additional capabilities
     cap_add:
       - SYS_NICE                                                                        # container should get some more processing time
+
+    # Deployment (docker compose up) settings
+    deploy:
+      # Set resource limits
+      resources:
+        # maximum resource limits
+        limits:
+          cpus: '1'
+          memory: 2048m
+        # minimum resource limits
+        reservations:
+          cpus: '0.1'
+          memory: 64m

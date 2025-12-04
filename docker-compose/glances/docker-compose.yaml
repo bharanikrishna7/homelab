@@ -38,3 +38,16 @@ services:
     # Container labels for additional metadata
     labels:
       - "com.centurylinklabs.watchtower.enable=true"                      # Enable automatic updates with Watchtower
+    
+    # Deployment (docker compose up) settings
+    deploy:
+      # Set resource limits
+      resources:
+        # maximum resource limits
+        limits:
+          cpus: '0.1'
+          memory: 256m
+        # minimum resource limits
+        reservations:
+          cpus: '0.05'
+          memory: 16m

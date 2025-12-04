@@ -11,9 +11,6 @@ services:
     
     restart: unless-stopped                               # Restart the container unless manually stopped
     
-    cpus: 0.1                                             # Maximum CPU Time available to the container 
-    mem_limit: 1g                                         # Maximum memory limit for the container
-
     pid: host                                             # use host's PID namespace and process ID
     network_mode: host                                    # Use the host network (no isolation between host and container)
     
@@ -48,7 +45,21 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro      # map host's docker socket to container
       - /run/dbus:/run/dbus:ro                            # map host's /run/dbus to container
 
+    # Netdata environment config to link instance with netdata cloud
     environment:
       - NETDATA_CLAIM_TOKEN=${CLAIM_TOKEN:?Netdata claim token is mandatory}
       - NETDATA_CLAIM_URL=https://app.netdata.cloud
       - NETDATA_CLAIM_ROOMS=${CLAIM_ROOMS:?Netdata claim room}
+
+    # Deployment (docker compose up) settings
+    deploy:
+      # Set resource limits
+      resources:
+        # maximum resource limits
+        limits:
+          cpus: '0.10'
+          memory: 512m
+        # minimum resource limits
+        reservations:
+          cpus: '0.05'
+          memory: 128m
