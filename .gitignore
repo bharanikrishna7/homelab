@@ -1,0 +1,2 @@
+# don't track tailscale .env file (sensitive information - key, hostname)
+./ruby/tailscale/.env
