@@ -1,8 +1,17 @@
 # don't track tailscale .env file (sensitive information - key, hostname)
-ruby/tailscale/.env
+docker-compose/tailscale/.env
 
 # don't track authentik .env file (sensitive information - key, hostname)
-ruby/authentik/.env
+docker-compose/authentik/.env
 
 # don't track cloudflared .env file (sensitive information - key, hostname)
-ruby/cloudflared/.env
+docker-compose/cloudflared/.env
+
+# don't track netdata .env file (sensitive information - tokens, hostname)
+docker-compose/netdata/.env
+
+# don't track proxmox-backup-server .env file (sensitive information - hostname)
+docker-compose/proxmox-backup-server/.env
+
+# don't track pihole .env file (sensitive information - tokens, hostname)
+docker-compose/pihole/.env
