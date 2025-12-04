@@ -40,9 +40,9 @@ services:
       - /run/dbus:/run/dbus:ro                            # map host's /run/dbus to container
 
     environment:
-      - NETDATA_CLAIM_TOKEN=${NETDATA_CLAIM_TOKEN:?Netdata claim token is mandatory}
+      - NETDATA_CLAIM_TOKEN=${CLAIM_TOKEN:?Netdata claim token is mandatory}
       - NETDATA_CLAIM_URL=https://app.netdata.cloud
-      - NETDATA_CLAIM_ROOMS=${NETDATA_CLAIM_ROOMS:?Netdata claim room}
+      - NETDATA_CLAIM_ROOMS=${CLAIM_ROOMS:?Netdata claim room}
 
 # configure volume paths in filesystem
 volumes:
