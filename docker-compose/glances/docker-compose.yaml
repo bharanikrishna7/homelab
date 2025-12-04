@@ -19,7 +19,7 @@ services:
 
     # Environment variables for Glances service
     environment:
-      - GLANCES_OPT=-w                                                    # Run container in webserver mode
+      - GLANCES_OPT=-w -t 15                                              # Set glances refresh rate in seconds and enable webserver mode
     
     # Bind docker and os-release from host to container
     volumes:
