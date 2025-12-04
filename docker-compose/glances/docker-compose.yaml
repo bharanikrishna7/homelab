@@ -8,6 +8,9 @@ services:
     image: nicolargo/glances:latest                                       # Pull the latest version of the Glances image
     container_name: glances                                               # Name of the tailscale container
     hostname: ${HOST:?Please supply FQDN for the container}               # Hostname for the tailscale container
+    
+    cpus: 0.1                                                             # Maximum CPU Time available to the container 
+                                                                          # (lower is better, since other processes are more important)
     mem_limit: 256m                                                       # Maximum memory limit for the container
     
     restart: unless-stopped                                               # Restart the container unless manually stopped

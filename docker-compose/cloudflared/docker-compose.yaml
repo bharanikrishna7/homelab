@@ -10,9 +10,8 @@ services:
     image: cloudflare/cloudflared:latest              # Pull the latest version of the Cloudflare Tunnel image
     container_name: cloudflared                       # Name of the Cloudflare Tunnel container
     hostname: ${HOST}                                 # Hostname for the Cloudflare Tunnel container
-    mem_limit: 1G                                     # Maximum memory limit for the container
-    cpus: 1                                           # Guaranteed CPU Threads available to the container
-
+    mem_limit: 1g                                     # Maximum memory limit for the container
+    
     restart: unless-stopped                           # Restart the container unless manually stopped
 
     # Logging configuration for Cloudflare Tunnel container
