@@ -1,0 +1,66 @@
+# Docker Compose configuration for setting up Netdata container
+
+services:
+  
+  # Netdata container
+  # refer here for additional parameters -> https://learn.netdata.cloud/docs/netdata-agent/installation/docker
+  netdata:
+    image: netdata/netdata:latest                         # Pull the latest build of netdata image
+    container_name: netdata                               # name of the container
+    hostname: ${HOSTNAME}                                 # Hostname for the tailscale container
+    
+    restart: unless-stopped                               # Restart the container unless manually stopped
+    
+    pid: host                                             # use host's PID namespace and process ID
+    network_mode: host                                    # Use the host network (no isolation between host and container)
+    
+    # Additional Capabilities
+    cap_add:
+      - SYS_PTRACE
+      - SYS_ADMIN
+    
+    # Security Options
+    security_opt:
+      - apparmor:unconfined                               # set apparmor profile to be unconfined
+
+    # Volume configuration for netdata
+    volumes:
+      - netdataconfig:/etc/netdata                        # netdata configuration
+      - netdatalib:/var/lib/netdata                       # netdatada library
+      - netdatacache:/var/cache/netdata                   # netdata cache
+      - /:/host/root:ro,rslave                            # map host's / to container
+      - /etc/passwd:/host/etc/passwd:ro                   # map host's /etc/passwd to container
+      - /etc/group:/host/etc/group:ro                     # map host's /etc/group to container
+      - /etc/localtime:/etc/localtime:ro                  # map host's /etc/localtime to container
+      - /proc:/host/proc:ro                               # map host's /proc to container
+      - /sys:/host/sys:ro                                 # map host's /sys to container
+      - /etc/os-release:/host/etc/os-release:ro           # map host's /etc/os-release to container
+      - /var/log:/host/var/log:ro                         # map host's /var/log to container
+      - /var/run/docker.sock:/var/run/docker.sock:ro      # map host's docker socket to container
+      - /run/dbus:/run/dbus:ro                            # map host's /run/dbus to container
+
+    environment:
+      - NETDATA_CLAIM_TOKEN=${NETDATA_CLAIM_TOKEN:?Netdata claim token is mandatory}
+      - NETDATA_CLAIM_URL=https://app.netdata.cloud
+      - NETDATA_CLAIM_ROOMS=${NETDATA_CLAIM_ROOMS:?Netdata claim room}
+
+# configure volume paths in filesystem
+volumes:
+  netdataconfig:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/etc/netdata
+  netdatalib:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/lib/netdata
+  netdatacache:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /var/cache/netdata
