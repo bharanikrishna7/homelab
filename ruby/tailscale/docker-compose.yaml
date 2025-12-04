@@ -43,8 +43,10 @@ services:
     
     # Additional container capabilities
     cap_add:
-      - NET_ADMIN
-      - NET_RAW
+      - NET_ADMIN                                                         # Apply additional linux capibilities (privileged container)
+      - NET_RAW                                                           # Use RAW and PACKET sockets; bind to any address for transparent proxying.
+      - SYS_NICE                                                          # Tailscale should get some more processing time
+
     
     # Container labels for additional metadata
     labels:

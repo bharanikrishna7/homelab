@@ -31,7 +31,13 @@ services:
     # Volume configuration for time synchronization and hosts file persistence
     volumes:
       - /etc/localtime:/etc/localtime:ro              # Synchronize time with the host
-      # - ./config/hosts:/etc/hosts                     # Mount hosts file from host to container
+      # - ./config/hosts:/etc/hosts                   # Mount hosts file from host to container
+
+    # Additional capabilities
+    cap_add:
+    - NET_ADMIN                                       # Apply additional linux capibilities (privileged container)
+    - NET_RAW                                         # Use RAW and PACKET sockets; bind to any address for transparent proxying.
+    - SYS_NICE                                        # Cloudflared should get some more processing time
 
     # Environment variables for Cloudflare Tunnel
     environment:

@@ -34,8 +34,8 @@ services:
     # Additional container capabilities
     cap_add:
       - SYS_RAWIO                                                         # smartctl support
-      - NET_ADMIN
-      - NET_RAW
+      - NET_ADMIN                                                         # Apply additional linux capibilities (privileged container)
+      - NET_RAW                                                           # Use RAW and PACKET sockets; bind to any address for transparent proxying.
     devices:
       - /dev/nvme0n1                                                      # map your storage device for systemctl support
     
