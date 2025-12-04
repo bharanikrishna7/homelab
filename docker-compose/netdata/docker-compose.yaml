@@ -11,7 +11,7 @@ services:
     
     restart: unless-stopped                               # Restart the container unless manually stopped
     
-    cpus: 0.2                                             # Maximum CPU Time available to the container 
+    cpus: 0.1                                             # Maximum CPU Time available to the container 
     mem_limit: 1g                                         # Maximum memory limit for the container
 
     pid: host                                             # use host's PID namespace and process ID
