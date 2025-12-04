@@ -25,9 +25,9 @@ services:
 
     # Volume configuration for netdata
     volumes:
-      - netdataconfig:/etc/netdata                        # netdata configuration
-      - netdatalib:/var/lib/netdata                       # netdatada library
-      - netdatacache:/var/cache/netdata                   # netdata cache
+      - /var/etc/netdata:/etc/netdata                     # netdata configuration
+      - /var/lib/netdata:/var/lib/netdata                 # netdatada library
+      - /var/cache/netdata:/var/cache/netdata             # netdata cache
       - /:/host/root:ro,rslave                            # map host's / to container
       - /etc/passwd:/host/etc/passwd:ro                   # map host's /etc/passwd to container
       - /etc/group:/host/etc/group:ro                     # map host's /etc/group to container
@@ -43,24 +43,3 @@ services:
       - NETDATA_CLAIM_TOKEN=${CLAIM_TOKEN:?Netdata claim token is mandatory}
       - NETDATA_CLAIM_URL=https://app.netdata.cloud
       - NETDATA_CLAIM_ROOMS=${CLAIM_ROOMS:?Netdata claim room}
-
-# configure volume paths in filesystem
-volumes:
-  netdataconfig:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /var/etc/netdata
-  netdatalib:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /var/lib/netdata
-  netdatacache:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /var/cache/netdata
