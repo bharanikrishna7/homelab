@@ -14,7 +14,7 @@ services:
     container_name: authentik-postgres                            # Name of the Postgres Authentik container
     hostname: ${PGHOST?-set fqdn for authentik postgres}          # Hostname for the Posgtres Authentik container
     mem_limit: 3G                                                 # Maximum memory limit for the container
-    cpus: 1.                                                      # Guaranteed CPU Threads available to the container
+    cpus: 1                                                       # Guaranteed CPU Threads available to the container
 
     restart: unless-stopped                                       # Restart the container unless manually stopped
     
