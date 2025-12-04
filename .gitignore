@@ -3,3 +3,6 @@ ruby/tailscale/.env
 
 # don't track authentik .env file (sensitive information - key, hostname)
 ruby/authentik/.env
+
+# don't track cloudflared .env file (sensitive information - key, hostname)
+ruby/cloudflared/.env
