@@ -6,7 +6,7 @@
 services:
 
   # Cloudflare Tunnel Service
-  cloudflare-tunnel:
+  cloudflared:
     image: cloudflare/cloudflared:latest              # Pull the latest version of the Cloudflare Tunnel image
     container_name: cloudflared                       # Name of the Cloudflare Tunnel container
     hostname: ${HOSTNAME}                             # Hostname for the Cloudflare Tunnel container
@@ -31,7 +31,7 @@ services:
     # Volume configuration for time synchronization and hosts file persistence
     volumes:
       - /etc/localtime:/etc/localtime:ro              # Synchronize time with the host
-      - ./config/hosts:/etc/hosts                     # Mount hosts file from host to container
+      - /srv/cloudflared/etc/hosts:/etc/hosts         # Mount hosts file from host to container
 
     # Environment variables for Cloudflare Tunnel
     environment:
