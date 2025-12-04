@@ -12,7 +12,7 @@ services:
   postgresql:
     image: docker.io/library/postgres:16-alpine                   # Pull the Postgres 16 image in alpine based container
     container_name: authentik-postgres                            # Name of the Postgres Authentik container
-    hostname: ${HOST}                                             # Hostname for the Posgtres Authentik container
+    hostname: ${PGHOST?-set fqdn for authentik postgres}          # Hostname for the Posgtres Authentik container
     mem_limit: 3G                                                 # Maximum memory limit for the container
     cpus: 0.5                                                     # Guaranteed CPU Threads available to the container
 
@@ -48,7 +48,7 @@ services:
   server:
     image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2025.10.2}   # Pull the Authentik Server image
     container_name: authentik                                                           # Name of the Authentik Server container
-    hostname: ${HOST}                                                                   # Hostname of the Authentik Server container
+    hostname: ${SRVHOST?-set fqdn for authentik server}                                 # Hostname of the Authentik Server container
     mem_limit: 3G                                                                       # Maximum memory limit for the container
     cpus: 0.5                                                                           # Guaranteed CPU Threads available to the container
 
@@ -90,7 +90,7 @@ services:
   worker:
     image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2025.10.2}   # Pull the Authentik Server image
     container_name: authentik-worker                                                    # Name of Authentik Worker container
-    hostname: ${HOST}                                                                   # Hostname of the Authentik Worker container
+    hostname: ${WRKHOST?-set fqdn for authentik worker}                                 # Hostname of the Authentik Worker container
     mem_limit: 1G                                                                       # Maximum memory limit for the container
 
     restart: unless-stopped                                                             # Restart the container unless manually stopped
