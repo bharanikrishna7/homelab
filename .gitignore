@@ -1,5 +1,5 @@
 # don't track tailscale .env file (sensitive information - key, hostname)
-./ruby/tailscale/.env
+ruby/tailscale/.env
 
 # don't track authentik .env file (sensitive information - key, hostname)
 ruby/authentik/.env
