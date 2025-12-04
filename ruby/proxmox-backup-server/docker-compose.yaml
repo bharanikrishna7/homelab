@@ -7,7 +7,7 @@ services:
   pbstape:
     image: ayufan/proxmox-backup-server:v4.0.21-1                         # Pull the latest version of the Tailscale image
     container_name: pbstape                                               # Name of the tailscale container
-    hostname: ${HOST}                                                     # Hostname for the tailscale container
+    hostname: ${HOST:?Hostname should be set to FQDN of container}        # Hostname for the tailscale container
     mem_limit: 4G                                                         # Maximum memory limit for the container
     
     restart: unless-stopped                                               # Restart the container unless manually stopped
