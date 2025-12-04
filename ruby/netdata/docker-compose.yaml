@@ -14,6 +14,12 @@ services:
     pid: host                                             # use host's PID namespace and process ID
     network_mode: host                                    # Use the host network (no isolation between host and container)
     
+    # Ports to be forwarded to host from container
+    ports:
+      # This line makes Actual available at port 5006 of the device you run the server on,
+      # i.e. http://localhost:19999. You can change the first number to change the port, if you want.
+      - '19999:19999'
+
     # Additional Capabilities
     cap_add:
       - SYS_PTRACE
