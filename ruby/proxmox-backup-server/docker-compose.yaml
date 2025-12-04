@@ -4,9 +4,9 @@ services:
   
   # PBS Container
   # refer here for additional parameters -> https://tailscale.com/kb/1282/docker
-  proxmoxbackupserver:
+  pbstape:
     image: ayufan/proxmox-backup-server:v4.0.21-1                         # Pull the latest version of the Tailscale image
-    container_name: proxmoxbackupserver0                                  # Name of the tailscale container
+    container_name: pbstape                                               # Name of the tailscale container
     hostname: ${HOST}                                                     # Hostname for the tailscale container
     mem_limit: 3G                                                         # Maximum memory limit for the container
     
@@ -14,22 +14,16 @@ services:
     
     # Ports to be forwarded to host from container
     ports:
-      # Forward proxmox backup server container port 8007
+      # Forward proxmox backup server container port
+      # 8007 (port on which actual service is running)
       # to host network
       - '8007:8007'
 
-    # Environment variables for Tailscale service
-    environment:
-      - TS_AUTHKEY=${TAILSCALE_AUTHKEY:?tailscale auth key required}      # Authkey required to login to tailscale
-      - TS_STATE_DIR=/var/lib/tailscale                                   # Tailscale directory
-      - TS_USERSPACE=true                                                 # Tailscale should use run in user space and not use kernel space
-                                                                          #   - if userspace true, cannot make outbound connections from tailscale
-    
     # Volume configuration for tailscale data + configuration directory
     volumes:
-      - /media/pbs/etc:/etc/proxmox-backup
-      - /media/pbs/logs:/var/log/proxmox-backup
-      - /media/pbs/lib:/var/lib/proxmox-backup
+      - /media/pbs/etc:/etc/proxmox-backup                                # mapping for /etc/proxmox-backup of container to host /media/pbs/etc
+      - /media/pbs/var/logs:/var/log/proxmox-backup                       # mapping for /var/logs/proxmox-backup of container to host /media/pbs/var/logs
+      - /media/pbs/var/lib:/var/lib/proxmox-backup                        # mapping for /var/lib/proxmox-backup of container to host /media/pbs/var/lib
     
     # Additional container capabilities
     cap_add:
