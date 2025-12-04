@@ -2,10 +2,10 @@
 
 echo "cleaning up proxmox backup server directories..."
 
-echo " --> removing '/media/pbs"
-rm -rf /media/pbs
+echo " --> removing '/srv/pbs"
+rm -rf /srv/pbs
 
-if [ -e "/media/pbs" ]; then
-  echo "unable to delete '/media/pbs', check permissions"
+if [ -e "/srv/pbs" ]; then
+  echo "unable to delete '/srv/pbs', check permissions"
   exit 1
 fi

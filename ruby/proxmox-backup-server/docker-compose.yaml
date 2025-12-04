@@ -19,17 +19,25 @@ services:
       # to host network
       - '8007:8007'
 
+    # Environment variables associated to PBS
+    environment:
+      TZ: Asia/Kolkata                                                    # set timezone to IST
+    
     # Volume configuration for tailscale data + configuration directory
     volumes:
-      - /media/pbs/etc:/etc/proxmox-backup                                # mapping for /etc/proxmox-backup of container to host /media/pbs/etc
-      - /media/pbs/var/logs:/var/log/proxmox-backup                       # mapping for /var/logs/proxmox-backup of container to host /media/pbs/var/logs
-      - /media/pbs/var/lib:/var/lib/proxmox-backup                        # mapping for /var/lib/proxmox-backup of container to host /media/pbs/var/lib
+      - /srv/pbs/etc:/etc/proxmox-backup                                  # mapping for /etc/proxmox-backup of container to host /srv/pbs/etc
+      - /srv/pbs/logs:/var/log/proxmox-backup                             # mapping for /var/logs/proxmox-backup of container to host /srv/pbs/lohs
+      - /srv/pbs/lib:/var/lib/proxmox-backup                              # mapping for /var/lib/proxmox-backup of container to host /srv/pbs/lib
+    tmpfs:
+      - /run                                                              # mandatory since proxmox-backup-server v2.1.x
     
     # Additional container capabilities
     cap_add:
       - SYS_RAWIO                                                         # smartctl support
       - NET_ADMIN
       - NET_RAW
+    devices:
+      - /dev/nvme0n1                                                      # map your storage device for systemctl support
     
     # Container labels for additional metadata
     labels:
