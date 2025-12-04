@@ -43,6 +43,10 @@ services:
     - /var/lib/authentik/postgres:/var/lib/postgresql
     - /var/lib/authentik/postgres/data:/var/lib/postgresql/data
 
+    # Additional capabilities
+    cap_add:
+      - SYS_NICE                                                                        # container should get some more processing time
+
   
   # Authentik Server Container
   server:
@@ -84,6 +88,10 @@ services:
     - /var/lib/authentik/media:/media
     - /var/lib/authentik/custom-templates:/templates
 
+    # Additional capabilities
+    cap_add:
+      - SYS_NICE                                                                        # container should get some more processing time
+
 
   # Authentik Worker Container 
   # responsible for performing background tasks
@@ -124,3 +132,7 @@ services:
     - /var/lib/authentik/media:/media
     - /var/lib/authentik/certs:/certs
     - /var/lib/authentik/custom-templates:/templates
+
+    # Additional capabilities
+    cap_add:
+      - SYS_NICE                                                                        # container should get some more processing time
