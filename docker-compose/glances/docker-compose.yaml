@@ -1,0 +1,37 @@
+# Docker Compose configuration for setting up a Glances container
+
+services:
+  
+  # Glances Container
+  # refer here for additional parameters -> https://hub.docker.com/r/nicolargo/glances
+  glances:
+    image: nicolargo/glances:latest                                       # Pull the latest version of the Glances image
+    container_name: glances                                               # Name of the tailscale container
+    hostname: ${HOST:?Please supply FQDN for the container}               # Hostname for the tailscale container
+    mem_limit: 256m                                                       # Maximum memory limit for the container
+    
+    restart: unless-stopped                                               # Restart the container unless manually stopped
+    
+    pid: host                                                             # use host's PID namespace and process ID
+    
+    # Ports to be forwarded to host from container
+    ports:
+      - 61208-61209:61208-61209                                           # Forward ports 61208-61209 to host (web UI)
+
+    # Environment variables for Glances service
+    environment:
+      - GLANCES_OPT=-w                                                    # Run container in webserver mode
+    
+    # Bind docker and os-release from host to container
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock                         # Bind /var/run/docker.sock from host to container           
+      - /etc/os-release:/etc/os-release:ro                                # Bind /etc/os-release from host to container
+
+    # Additional container capabilities
+    cap_add:
+      - NET_ADMIN                                                         # Apply additional linux capibilities (privileged container)
+      - NET_RAW                                                           # Use RAW and PACKET sockets; bind to any address for transparent proxying.
+    
+    # Container labels for additional metadata
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"                      # Enable automatic updates with Watchtower
