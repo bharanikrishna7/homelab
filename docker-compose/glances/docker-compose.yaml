@@ -30,10 +30,11 @@ services:
     cap_add:
       - NET_ADMIN                                                         # Apply additional linux capibilities (privileged container)
       - NET_RAW                                                           # Use RAW and PACKET sockets; bind to any address for transparent proxying.
-    
-    # Container labels for additional metadata
+
+    # Whatsupdocker tracking
     labels:
-      - "com.centurylinklabs.watchtower.enable=true"                      # Enable automatic updates with Watchtower
+      - 'wud.tag.include=latest'
+      - 'wud.watch.digest=true'      
     
     # Deployment (docker compose up) settings
     deploy:

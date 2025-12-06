@@ -45,10 +45,10 @@ services:
       - NET_RAW                                                           # Use RAW and PACKET sockets; bind to any address for transparent proxying.
       - SYS_NICE                                                          # Tailscale should get some more processing time
 
-    
-    # Container labels for additional metadata
+    # Whatsupdocker tracking
     labels:
-      - "com.centurylinklabs.watchtower.enable=true"                      # Enable automatic updates with Watchtower
+      - 'wud.tag.include=latest'
+      - 'wud.watch.digest=true'
     
     # Deployment (docker compose up) settings
     deploy:
