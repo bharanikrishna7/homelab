@@ -1,0 +1,41 @@
+# Docker Compose configuration for setting up a mailserver container
+
+services:
+  # Mailserver container
+  # refer here for additional details -> https://github.com/docker-mailserver/docker-mailserver
+  mailserver:
+    image:  ghcr.io/docker-mailserver/docker-mailserver:latest            # Pull the latest version of the Tailscale image
+    container_name: mailserver                                            # Name of the tailscale container
+    hostname: ${HOST:?FQDN for mailserver container}                      # Provide the FQDN of your mail server here (Your DNS MX record should point to this value)
+    domainname: ${DOMAIN:?Domain Name is mandatory ex - example.org}      # Provide the domain name for container
+    
+    restart: unless-stopped                                               # Restart the container unless manually stopped
+    stop_grace_period: 1m                                                 # Additional 1 minute for container to shut down gracefully
+
+    # More information about the mail-server ports:
+    # https://docker-mailserver.github.io/docker-mailserver/latest/config/security/understanding-the-ports/
+    ports:
+      - "25:25"    # SMTP  (explicit TLS => STARTTLS, Authentication is DISABLED => use port 465/587 instead)
+      - "143:143"  # IMAP4 (explicit TLS => STARTTLS)
+      - "465:465"  # ESMTP (implicit TLS)
+      - "587:587"  # ESMTP (explicit TLS => STARTTLS)
+      - "993:993"  # IMAP4 (implicit TLS)
+    
+    # Map host volumes to container volumes
+    volumes:
+      - /srv/mailserver/mail-data/:/var/mail/
+      - /srv/mailserver/mail-state/:/var/mail-state/
+      - /srv/mailserver/mail-logs/:/var/log/mail/
+      - /srv/mailserver/config/:/tmp/docker-mailserver/
+      - /etc/localtime:/etc/localtime:ro
+      - /srv/mailserver/letsencrypt:/etc/letsencrypt
+    
+    cap_add:
+      - NET_ADMIN
+      - SYS_PTRACE
+
+    # Container health check
+    healthcheck:
+      test: "ss --listening --ipv4 --tcp | grep --silent ':smtp' || exit 1"
+      timeout: 3s
+      retries: 0
