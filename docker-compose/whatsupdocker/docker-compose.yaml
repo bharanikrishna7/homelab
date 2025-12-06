@@ -11,6 +11,12 @@ services:
     
     restart: unless-stopped                             # Restart the container unless manually stopped
     
+    environment:
+      - WUD_AUTH_OIDC_AUTHENTIK_CLIENTID=${WUD_AUTH_OIDC_AUTHENTIK_CLIENTID:?paste the Client ID from authentik ruby-wud provider}
+      - WUD_AUTH_OIDC_AUTHENTIK_CLIENTSECRET=${WUD_AUTH_OIDC_AUTHENTIK_CLIENTSECRET:?paste the Client Secret from authentik ruby-wud provider}
+      - WUD_AUTH_OIDC_AUTHENTIK_DISCOVERY=${WUD_AUTH_OIDC_AUTHENTIK_DISCOVERY:?<authentik_url>/application/o/<authentik_application_name>/.well-known/openid-configuration}
+      - WUD_AUTH_OIDC_AUTHENTIK_REDIRECT=true           # optional (to skip internal login page)
+
     # Map volumes from host to container
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock       # Mapping host's docker socket to container's docker socket
