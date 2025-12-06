@@ -51,6 +51,10 @@ services:
       - NETDATA_CLAIM_URL=https://app.netdata.cloud
       - NETDATA_CLAIM_ROOMS=${CLAIM_ROOMS:?Netdata claim room}
 
+    # Container labels for additional metadata
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"  # Enable automatic updates with Watchtower
+
     # Deployment (docker compose up) settings
     deploy:
       # Set resource limits
