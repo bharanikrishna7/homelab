@@ -57,6 +57,10 @@ services:
         reservations:
           cpus: '0.1'
           memory: 32m
+
+    # docking-station tracking
+    labels:
+      - 'com.loolzzz.docking-station.enabled=true'
   
   # Authentik Server Container
   server:
@@ -112,6 +116,10 @@ services:
         reservations:
           cpus: '0.1'
           memory: 64m
+
+    # docking-station tracking
+    labels:
+      - 'com.loolzzz.docking-station.enabled=true'
 
 
   # Authentik Worker Container 
@@ -169,3 +177,7 @@ services:
         reservations:
           cpus: '0.1'
           memory: 64m
+
+    # docking-station tracking
+    labels:
+      - 'com.loolzzz.docking-station.enabled=true'

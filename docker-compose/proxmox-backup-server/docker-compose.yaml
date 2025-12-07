@@ -38,9 +38,9 @@ services:
     devices:
       - /dev/nvme0n1                                                      # map your storage device for systemctl support
     
-    # Container labels for additional metadata
+    # docking-station tracking
     labels:
-      - "com.centurylinklabs.watchtower.enable=true"                      # Enable automatic updates with Watchtower
+      - 'com.loolzzz.docking-station.enabled=true'
     
     # Deployment (docker compose up) settings
     deploy:

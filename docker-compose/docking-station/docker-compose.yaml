@@ -24,3 +24,7 @@ services:
       # i usually put everything in a single neat folder under
       #  ⚠️ left stacks path == right stacks path (MUST)
       - ../:/mnt/compose-files
+
+    # docking-station tracking
+    labels:
+      - 'com.loolzzz.docking-station.enabled=true'

@@ -31,10 +31,9 @@ services:
       - NET_ADMIN                                                         # Apply additional linux capibilities (privileged container)
       - NET_RAW                                                           # Use RAW and PACKET sockets; bind to any address for transparent proxying.
 
-    # Whatsupdocker tracking
+    # docking-station tracking
     labels:
-      - 'wud.tag.include=latest'
-      - 'wud.watch.digest=true'      
+      - 'com.loolzzz.docking-station.enabled=true'     
     
     # Deployment (docker compose up) settings
     deploy:

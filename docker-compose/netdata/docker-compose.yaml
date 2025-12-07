@@ -5,7 +5,7 @@ services:
   # Netdata container
   # refer here for additional parameters -> https://learn.netdata.cloud/docs/netdata-agent/installation/docker
   netdata:
-    image: netdata/netdata:latest                         # Pull the latest build of netdata image
+    image: netdata/netdata:stable                         # Pull the latest build of netdata image
     container_name: netdata                               # name of the container
     hostname: ${HOSTNAME}                                 # Hostname for the tailscale container
     
@@ -51,10 +51,9 @@ services:
       - NETDATA_CLAIM_URL=https://app.netdata.cloud
       - NETDATA_CLAIM_ROOMS=${CLAIM_ROOMS:?Netdata claim room}
 
-    # Whatsupdocker tracking
+    # docking-station tracking
     labels:
-      - 'wud.tag.include=latest'
-      - 'wud.watch.digest=true'
+      - 'com.loolzzz.docking-station.enabled=true'
 
     # Deployment (docker compose up) settings
     deploy:

@@ -49,10 +49,9 @@ services:
       retries: 3                                      # Number of retries before marking as unhealthy
       start_period: 10s                               # Delay before health checks begin
 
-    # Whatsupdocker tracking
+    # docking-station tracking
     labels:
-      - 'wud.tag.include=latest'
-      - 'wud.watch.digest=true'
+      - 'com.loolzzz.docking-station.enabled=true'
 
     # Deployment (docker compose up) settings
     deploy:
