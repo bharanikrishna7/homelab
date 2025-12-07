@@ -28,3 +28,12 @@ services:
     # docking-station tracking
     labels:
       - 'com.loolzzz.docking-station.enabled=true'
+
+    # Healthcheck to ensure glances is working as expected
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 3m
+      timeout: 15s
+      retries: 3
+      start_period: 60s
+      start_interval: 20s

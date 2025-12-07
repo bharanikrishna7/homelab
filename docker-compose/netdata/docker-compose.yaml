@@ -67,3 +67,12 @@ services:
         reservations:
           cpus: '0.05'
           memory: 128m
+
+    # Healthcheck to ensure netdata is working as expected
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:19999"]
+      interval: 3m
+      timeout: 15s
+      retries: 3
+      start_period: 60s
+      start_interval: 20s

@@ -61,3 +61,11 @@ services:
         reservations:
           cpus: '0.2'
           memory: 32m
+
+    # Health check configuration to verify Cloudflare Tunnel readiness
+    healthcheck:
+      test: ["CMD", "tailscale", "ip"]                # Check if tailscale version command works
+      interval: 30s                                   # Time between health check attempts
+      timeout: 10s                                    # Time to wait for a response
+      retries: 3                                      # Number of retries before marking as unhealthy
+      start_period: 10s                               # Delay before health checks begin
