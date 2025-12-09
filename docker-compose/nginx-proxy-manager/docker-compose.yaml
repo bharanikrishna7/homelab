@@ -1,0 +1,58 @@
+# Docker Compose configuration for setting up a Nginx-Proxy-Manager container
+#
+# This container will be responsible for acting as reverse proxy
+# for the services hosted on this device
+services:
+
+  # Nginx-Proxy-Manager Container
+  #
+  # refer here for additional parameters -> https://nginxproxymanager.com/setup/
+  app:
+    image: jc21/nginx-proxy-manager:latest                    # Pull the latest version of the Tailscale image
+    container_name: nginx-proxy-manager                       # Name of the tailscale container
+    hostname: ${HOST}                                         # Hostname for the tailscale container
+
+    restart: unless-stopped                                   # Restart the container unless manually stopped
+
+    # Ports to be forwarded to host from container
+    #
+    # These ports are in format <host-port>:<container-port>
+    ports:
+      - '80:80'                                               # Public HTTP Port
+      - '443:443'                                             # Public HTTPS Port
+      - '81:81'                                               # Admin Web Port
+      # Add any other Stream port you want to expose
+      # - '21:21' # FTP
+
+    # Environment variables to configure nginx-proxy-manager
+    environment:
+      TZ: 'Asia/Kolkata'                                      # Set appropriate timezone for your location
+      DISABLE_IPV6: 'false'                                   # IPv6 is enabled (by default, can be changed)
+
+      # Uncomment this if you want to change the location of
+      # the SQLite DB file within the container
+      # DB_SQLITE_FILE: "/data/database.sqlite"
+
+    # Volumes store your container data
+    volumes:
+      - /srv/nginx-proxy-manager/data:/data                   # user - routes - auth and other applicaiton settings
+      - /srv/nginx-proxy-manager/letsencrypt:/etc/letsencrypt # letsencrypt data
+    
+    # Container health-check condition
+    healthcheck:
+      test: ["CMD", "/usr/bin/check-health"]
+      interval: 60s
+      timeout: 3s
+
+    # Deployment (docker compose up) settings
+    deploy:
+      # Set resource limits
+      resources:
+        # maximum resource limits
+        limits:
+          cpus: '0.8'
+          memory: 1024m
+        # minimum resource limits
+        reservations:
+          cpus: '0.1'
+          memory: 64m
