@@ -10,7 +10,7 @@ services:
   dozzle:
     image: amir20/dozzle:latest                               # container image
     container_name: dozzle                                    # container name
-    hostname: ${HOST}                                         # container hostname
+    hostname: dozzle                                          # container hostname
 
     restart: unless-stopped                                   # Restart the container unless manually stopped
 
@@ -67,7 +67,7 @@ services:
   oauth2-proxy:
     image: quay.io/oauth2-proxy/oauth2-proxy:latest           
     container_name: dozzle-oidc                               # container name
-    hostname: ${HOST}                                         # container hostname
+    hostname: ${HOST:?Replace with FQDN for dozzle container} # container hostname
     
     restart: unless-stopped                                   # Restart the container unless manually stopped
     
