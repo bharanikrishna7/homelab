@@ -2,38 +2,48 @@
 #
 # This service will be responsible for quickly
 # accessing logs for docker containers
+#
+# Dozzle would be accessible at -> http://localhost:2000
+#
+# NOTE: Please be sure to set ./oauth2-proxy.cfg
 services:
   
   # dozzle container
   #
   # refer here for additional parameters -> https://dozzle.dev/guide/getting-started
   dozzle:
-    image: amir20/dozzle:latest                               # container image
-    container_name: dozzle                                    # container name
-    hostname: dozzle                                          # container hostname
+    # container image
+    image: amir20/dozzle:latest
+    # container name
+    container_name: dozzle
+    # container host
+    hostname: dozzle
 
-    restart: unless-stopped                                   # Restart the container unless manually stopped
+    # restart the container unless manually stopped
+    restart: unless-stopped
 
-    # Volume mapping
+    # volume mapping from host to container
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock             # map host's docker socker to container's docker socket
+      # map host's docker socker to container's docker socket
+      - /var/run/docker.sock:/var/run/docker.sock
 
     # Ports to be forwarded to host from container
     # ports:
-    #   - 8080:8080                                             # forwarding dozzle port
+    #   forwarding dozzle application port
+    #   - 8080:8080
     
-    # Environment variable to configure dozzle service behavior
+    # environment variable for container
     environment:
-      # Uncomment to enable container actions (stop, start, restart). See https://dozzle.dev/guide/actions
+      # uncomment to enable container actions (stop, start, restart). See https://dozzle.dev/guide/actions
       DOZZLE_ENABLE_ACTIONS: true
       
-      # Uncomment to allow access to container shells. See https://dozzle.dev/guide/shell
+      # uncomment to allow access to container shells. See https://dozzle.dev/guide/shell
       DOZZLE_ENABLE_SHELL: true
       
-      # Opting out of dozzle digital ocean analytics
+      # opting out of dozzle digital ocean analytics
       DOZZLE_NO_ANALYTICS: true
       
-      # Uncomment to enable authentication. See https://dozzle.dev/guide/authentication
+      # uncomment to enable authentication. See https://dozzle.dev/guide/authentication
       DOZZLE_AUTH_PROVIDER: forward-proxy
       DOZZLE_AUTH_HEADER_USER: X-Forwarded-User
       DOZZLE_AUTH_HEADER_EMAIL: X-Forwarded-Email
@@ -42,7 +52,7 @@ services:
       # Uncomment to add remote hosts
       # DOZZLE_REMOTE_HOST: tcp://167.99.1.1:2376,tcp://167.99.1.2:2376
     
-    # healthcheck for dozzle
+    # container health check
     healthcheck:
       test: ["CMD", "/dozzle", "healthcheck"]
       interval: 3s
@@ -50,9 +60,9 @@ services:
       retries: 5
       start_period: 30s
 
-    # Deployment (docker compose up) settings
+    # deployment (docker compose up) settings
     deploy:
-      # Set resource limits
+      # set resource limits
       resources:
         # maximum resource limits
         limits:
@@ -65,30 +75,39 @@ services:
 
   # oauth2-proxy container
   oauth2-proxy:
-    image: quay.io/oauth2-proxy/oauth2-proxy:latest           
-    container_name: dozzle-oidc                               # container name
-    hostname: ${HOST:?Replace with FQDN for dozzle container} # container hostname
+    # container image
+    image: quay.io/oauth2-proxy/oauth2-proxy:latest
+    # container name
+    container_name: dozzle-oidc
+    # container hostname
+    hostname: ${HOSTNAME}
     
-    restart: unless-stopped                                   # Restart the container unless manually stopped
+    # restart the container unless manually stopped
+    restart: unless-stopped
     
-    command: --config /oauth2-proxy.cfg                       # command to run on container start
+    # command to run on container start
+    command: --config /oauth2-proxy.cfg
     
-    # volume mapping
+    # volume mapping from host to container
     volumes:
-      - "./oauth2-proxy.cfg:/oauth2-proxy.cfg"                # oauth application configuration
+      # oauth application configuration
+      - "./oauth2-proxy.cfg:/oauth2-proxy.cfg"
     
     # ports to be forwarded from host to container
     ports:
-      - 8080:4180                                             # forwarding oauth2-proxy port to host
+      # forwarding oauth2-proxy port (4180) to host ()
+      - 2000:4180
 
-    # Depencencies of Authentik Server Container
+    # container depencencies
     depends_on:
-      dozzle:                                                 # Depends on Postgres Server's
-        condition: service_healthy                            # health check to be successful
+      # depends on dozzle container
+      dozzle:
+        # container should be healthy
+        condition: service_healthy
     
-    # Deployment (docker compose up) settings
+    # deployment (docker compose up) settings
     deploy:
-      # Set resource limits
+      # set resource limits
       resources:
         # maximum resource limits
         limits:
