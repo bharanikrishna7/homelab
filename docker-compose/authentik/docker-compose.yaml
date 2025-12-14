@@ -6,7 +6,7 @@
 # - authentik/worker : 2025.10.2
 # refer for additional details - https://docs.goauthentik.io/install-config/install/docker-compose/
 #
-# Access authentik via http://127.0.0.1:2000 or https://127.0.0.1:2443
+# Access authentik via http://127.0.0.1:1000 or https://127.0.0.1:1443
 services:
 
   # Postgresql Container for storing authentik data
@@ -105,9 +105,9 @@ services:
     # ports to be forwarded from host to container
     ports:
     # authentik server web interface port (HTTP)
-    - ${COMPOSE_PORT_HTTP:-2000}:9000
+    - ${COMPOSE_PORT_HTTP:-1000}:9000
     # authentik server web interface port (HTTPS)
-    - ${COMPOSE_PORT_HTTPS:-2443}:9443
+    - ${COMPOSE_PORT_HTTPS:-1443}:9443
     
     # volume mapping from host to container
     volumes:
