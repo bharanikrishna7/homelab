@@ -48,10 +48,10 @@ services:
         --vfs-read-chunk-size=16M \
         --vfs-read-chunk-size-limit=0 \
         --vfs-read-chunk-streams=16
-        --smb-host sambahost \
+        --smb-host $RCLONE_SMB_HOST \
         --smb-user $RCLONE_SMB_USER \
         --smb-port 445 \
-        --smb-pass $RCLONE_SMB_PORT
+        --smb-pass $RCLONE_SMB_PASS
 
     # Environment variables associated with container
     environment:
@@ -114,7 +114,7 @@ services:
     
     # ports to be forwarded from host to container
     ports:
-      - 4000:4180                                             # forwarding oauth2-proxy port to host
+      - 3000:4180                                             # forwarding oauth2-proxy port to host
 
     # Depencencies of Authentik Server Container
     depends_on:
