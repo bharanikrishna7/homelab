@@ -52,6 +52,10 @@ services:
       # Uncomment to add remote hosts
       # DOZZLE_REMOTE_HOST: tcp://167.99.1.1:2376,tcp://167.99.1.2:2376
     
+    # container labels
+    labels:
+      - 'admins.chekuri.org=true'
+
     # container health check
     healthcheck:
       test: ["CMD", "/dozzle", "healthcheck"]
@@ -97,6 +101,10 @@ services:
     ports:
       # forwarding oauth2-proxy port (4180) to host ()
       - 2000:4180
+
+    # container labels
+    labels:
+      - 'admins.chekuri.org=true'
 
     # container depencencies
     depends_on:
