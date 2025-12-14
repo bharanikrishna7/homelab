@@ -5,28 +5,33 @@
 # - authentik/server : 2025.10.2
 # - authentik/worker : 2025.10.2
 # refer for additional details - https://docs.goauthentik.io/install-config/install/docker-compose/
-
+#
+# Access authentik via http://127.0.0.1:2000 or https://127.0.0.1:2443
 services:
 
   # Postgresql Container for storing authentik data
   postgresql:
-    image: docker.io/library/postgres:16-alpine                   # Pull the Postgres 16 image in alpine based container
-    container_name: authentik-postgres                            # Name of the Postgres Authentik container
-    hostname: ${PGHOST?-set fqdn for authentik postgres}          # Hostname for the Posgtres Authentik container
+    # container image
+    image: docker.io/library/postgres:16-alpine
+    # container name
+    container_name: authentik-postgres
+    # container hostname
+    hostname: postgres
     
-    restart: unless-stopped                                       # Restart the container unless manually stopped
+    # restart the container unless manually stopped
+    restart: unless-stopped
     
-    # Environment file to scan variables
+    # environment file to scan variables
     env_file:
     - .env
     
-    # Environment variables for Postgres
+    # environment variables for container
     environment:
       POSTGRES_DB: ${PG_DB:-authentik}
-      POSTGRES_PASSWORD: ${PG_PASS:?database password required}
+      POSTGRES_PASSWORD: ${PG_PASS}
       POSTGRES_USER: ${PG_USER:-authentik}
     
-    # Health check configuration to verify Postgres readiness
+    # container health check
     healthcheck:
       interval: 30s
       retries: 5
@@ -36,18 +41,19 @@ services:
       - pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}
       timeout: 5s
 
-    # Volume configuration for postgres data persistence
+    # volume mapping from host to container
     volumes:
-    - /var/lib/authentik/postgres:/var/lib/postgresql
-    - /var/lib/authentik/postgres/data:/var/lib/postgresql/data
+    - /srv/authentik/lib/postgres:/var/lib/postgresql
+    - /srv/authentik/lib/postgres/data:/var/lib/postgresql/data
 
-    # Additional capabilities
+    # additional capabilities
     cap_add:
-      - SYS_NICE                                                                        # container should get some more processing time
+      # container should get some more processing time
+      - SYS_NICE
 
-    # Deployment (docker compose up) settings
+    # deployment (docker compose up) settings
     deploy:
-      # Set resource limits
+      # set resource limits
       resources:
         # maximum resource limits
         limits:
@@ -58,55 +64,64 @@ services:
           cpus: '0.1'
           memory: 32m
 
-    # docking-station tracking
+    # container labels
     labels:
-      - 'com.loolzzz.docking-station.enabled=true'
+      - 'admins.chekuri.org=true'
   
   # Authentik Server Container
   server:
-    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2025.10.2}   # Pull the Authentik Server image
-    container_name: authentik                                                           # Name of the Authentik Server container
-    hostname: ${SRVHOST?-set fqdn for authentik server}                                 # Hostname of the Authentik Server container
+    # container image
+    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2025.10.2}
+    # container name
+    container_name: authentik
+    # container hostname
+    hostname: ${HOSTNAME}
     
-    restart: unless-stopped                                                             # Restart the container unless manually stopped
+    # restart the container unless manually stopped
+    restart: unless-stopped
     
-    # Command to run Authentik Server
+    # command to run Authentik in server mode
     command: server
 
-    # Depencencies of Authentik Server Container
+    # container depencencies
     depends_on:
-      postgresql:                                                                       # Depends on Postgres Server's
-        condition: service_healthy                                                      # health check to be successful
+      # depends on Postgresql container
+      postgresql:
+        # postgresql health should be healthy
+        condition: service_healthy
     
-    # Environment file to scan variables
+    # environment file to scan variables
     env_file:
     - .env
 
-    # Environment variables for Authentik Server
+    # environment variables for container
     environment:
       AUTHENTIK_POSTGRESQL__HOST: postgresql
       AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
       AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
       AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
-      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY:?secret key required}
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY}
     
-    # Ports to be forwarded from container to host
+    # ports to be forwarded from host to container
     ports:
-    - ${COMPOSE_PORT_HTTP:-9000}:9000                                                   # Authentik Server Web Interface Port (HTTP)
-    - ${COMPOSE_PORT_HTTPS:-9443}:9443                                                  # Authentik Server Web Interface Port (HTTPS)
+    # authentik server web interface port (HTTP)
+    - ${COMPOSE_PORT_HTTP:-2000}:9000
+    # authentik server web interface port (HTTPS)
+    - ${COMPOSE_PORT_HTTPS:-2443}:9443
     
-    # Volume configuration for authentik media and template synchronization
+    # volume mapping from host to container
     volumes:
-    - /var/lib/authentik/media:/media
-    - /var/lib/authentik/custom-templates:/templates
+    - /srv/authentik/media:/media
+    - /srv/authentik/custom-templates:/templates
 
-    # Additional capabilities
+    # additional capabilities
     cap_add:
-      - SYS_NICE                                                                        # container should get some more processing time
+      # container should get some more processing time
+      - SYS_NICE
 
-    # Deployment (docker compose up) settings
+    # deployment (docker compose up) settings
     deploy:
-      # Set resource limits
+      # set resource limits
       resources:
         # maximum resource limits
         limits:
@@ -117,11 +132,11 @@ services:
           cpus: '0.1'
           memory: 64m
 
-    # docking-station tracking
+    # container labels
     labels:
-      - 'com.loolzzz.docking-station.enabled=true'
+      - 'admins.chekuri.org=true'
 
-    # Healthcheck to ensure authentik is working as expected
+    # container health check
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000"]
       interval: 3m
@@ -133,49 +148,56 @@ services:
   # Authentik Worker Container 
   # responsible for performing background tasks
   worker:
-    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2025.10.2}   # Pull the Authentik Server image
-    container_name: authentik-worker                                                    # Name of Authentik Worker container
-    hostname: ${WRKHOST?-set fqdn for authentik worker}                                 # Hostname of the Authentik Worker container
+    # container image
+    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2025.10.2}
+    # container name
+    container_name: authentik-worker
+    # container hostname
+    hostname: authentik-worker
     
-    restart: unless-stopped                                                             # Restart the container unless manually stopped
+    # restart the container unless manually stopped
+    restart: unless-stopped
     
-    # Command to run Authentik Worker
+    # command to run Authentik in worker mode
     command: worker
 
-    # Depencencies of Authentik Worker Container
+    # container depencencies
     depends_on:
-      postgresql:                                                                       # Depends on Postgres Server's
-        condition: service_healthy                                                      # health check to be successful
+      # depends on Postgresql container
+      postgresql:
+        # postgresql health should be healthy
+        condition: service_healthy    
     
-    # Environment file to scan variables
+    # environment file to scan variables
     env_file:
     - .env
     
-    # Environment variables for Authentik Worker
+    # environment variables for container
     environment:
       AUTHENTIK_POSTGRESQL__HOST: postgresql
       AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
       AUTHENTIK_POSTGRESQL__PASSWORD: ${PG_PASS}
       AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
-      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY:?secret key required}
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY}
     
-    # Define the user which will be setting up container during docker compose up
+    # container's default user
     user: root
     
-    # Volume configuration for authentik media, certificates & template synchronization
+    # volume mapping from host to container
     volumes:
     - /var/run/docker.sock:/var/run/docker.sock
-    - /var/lib/authentik/media:/media
-    - /var/lib/authentik/certs:/certs
-    - /var/lib/authentik/custom-templates:/templates
+    - /srv/authentik/media:/media
+    - /srv/authentik/certs:/certs
+    - /srv/authentik/custom-templates:/templates
 
-    # Additional capabilities
+    # additional capabilities
     cap_add:
-      - SYS_NICE                                                                        # container should get some more processing time
+      # container should get some more processing time
+      - SYS_NICE
 
-    # Deployment (docker compose up) settings
+    # deployment (docker compose up) settings
     deploy:
-      # Set resource limits
+      # set resource limits
       resources:
         # maximum resource limits
         limits:
@@ -186,6 +208,6 @@ services:
           cpus: '0.1'
           memory: 64m
 
-    # docking-station tracking
+    # container labels
     labels:
-      - 'com.loolzzz.docking-station.enabled=true'
+      - 'admins.chekuri.org=true'
