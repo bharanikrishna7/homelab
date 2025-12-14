@@ -7,55 +7,67 @@ services:
 
   # Cloudflare Tunnel Service
   cloudflare-tunnel:
-    image: cloudflare/cloudflared:latest              # Pull the latest version of the Cloudflare Tunnel image
-    container_name: cloudflared                       # Name of the Cloudflare Tunnel container
-    hostname: ${HOST}                                 # Hostname for the Cloudflare Tunnel container
+    # container image
+    image: cloudflare/cloudflared:latest
+    # container name
+    container_name: cloudflared
+    # container host
+    hostname: ${HOST}
     
-    restart: unless-stopped                           # Restart the container unless manually stopped
+    # restart the container unless manually stopped
+    restart: unless-stopped
 
-    # Logging configuration for Cloudflare Tunnel container
+    # logging configuration for container
     logging:
-      driver: "json-file"                             # Use the default json-file logging driver
+      # use the default json-file logging driver
+      driver: "json-file"
       options:
-        max-size: "100m"                              # Maximum log file size before rotation (100 MB)
-        max-file: "10"                                # Maximum number of log files to retain (10)
+        # maximum log file size before rotation (100 MB)
+        max-size: "100m"
+        # maximum number of log files to retain (10)
+        max-file: "10"
 
-    # Network mode configuration
-    network_mode: "host"                              # Use the host network (no isolation between host and container)
+    # use the host network (no isolation between host and container)
+    network_mode: "host"
 
-    # Command to run Cloudflare Tunnel
-    command: tunnel run                               # Command to start the Cloudflare tunnel
+    # command to run on container start
+    command: tunnel run
 
-    # Volume configuration for time synchronization and hosts file persistence
+    # volume mapping from host to container
     volumes:
-      - /etc/localtime:/etc/localtime:ro              # Synchronize time with the host
-      # - ./config/hosts:/etc/hosts                   # Mount hosts file from host to container
+      # synchronize time with the host
+      - /etc/localtime:/etc/localtime:ro
 
-    # Additional capabilities
+    # additional capabilities
     cap_add:
-    - NET_ADMIN                                       # Apply additional linux capibilities (privileged container)
-    - NET_RAW                                         # Use RAW and PACKET sockets; bind to any address for transparent proxying.
-    - SYS_NICE                                        # Cloudflared should get some more processing time
+    # net admin privilege
+    - NET_ADMIN
+    # use RAW and PACKET sockets; bind to any address for transparent proxying.
+    - NET_RAW
+    # container should get some more processing time
+    - SYS_NICE
 
-    # Environment variables for Cloudflare Tunnel
+    # environment variables for container
     environment:
-      - "TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}"     # Pass the Cloudflare Tunnel token from environment variable
+      # cloudflare tunnel token
+      - "TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}"
 
-    # Health check configuration to verify Cloudflare Tunnel readiness
+    # container health check
     healthcheck:
-      test: ["CMD", "cloudflared", "--version"]       # Check if cloudflared version command works
-      interval: 30s                                   # Time between health check attempts
-      timeout: 10s                                    # Time to wait for a response
-      retries: 3                                      # Number of retries before marking as unhealthy
-      start_period: 10s                               # Delay before health checks begin
+      # check if cloudflared version command works
+      test: ["CMD", "cloudflared", "--version"]
+      # time between health check attempts
+      interval: 30s
+      # time to wait for a response
+      timeout: 10s
+      # number of retries before marking as unhealthy
+      retries: 3
+      # delay before health checks begin
+      start_period: 10s
 
-    # docking-station tracking
-    labels:
-      - 'com.loolzzz.docking-station.enabled=true'
-
-    # Deployment (docker compose up) settings
+    # deployment (docker compose up) settings
     deploy:
-      # Set resource limits
+      # set resource limits
       resources:
         # maximum resource limits
         limits:
@@ -65,3 +77,7 @@ services:
         reservations:
           cpus: '0.2'
           memory: 16m
+
+    # container labels
+    labels:
+      - 'admins.chekuri.org=true'
