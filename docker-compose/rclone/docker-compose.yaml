@@ -1,0 +1,135 @@
+# Docker Compose configuration for setting up RClone container
+
+services:
+  
+  # RClone Container
+  # refer here for additional parameters -> https://hub.docker.com/r/rclone/rclone
+  rclone:
+    # Base image for the container
+    image: rclone/rclone:latest
+    # Name of the container
+    container_name: rclone
+    # Hostname of the container
+    hostname: ${HOST:?Please supply FQDN for the rclone container}
+    
+    # Restart the container unless manually stopped
+    restart: unless-stopped
+    
+    # Command to execute on container start
+    command: 
+      rcd \
+        serve nfs \
+        --cache-dir=/srv/rclone/cache \
+        --dir-cache-time=5m \
+        --rc \
+        --rc-web-gui \
+        --rc-web-gui-update \
+        --rc-web-gui-force-update \
+        --rc-web-gui-no-open-browser \
+        --rc-enable-metrics \
+        --rc-addr=0.0.0.0:5572 \
+        --rc-no-auth \
+        --tpslimit=64 \
+        --tpslimit-burst=0 \
+        --track-renames \
+        --track-renames-strategy leaf,modtime \
+        --timeout 5m \
+        --transfers 4 \
+        --metadata \
+        --no-gzip-encoding \
+        --partial-suffix .partial \
+        --retries 3 \
+        --retries-sleep 16s \
+        --stats-file-name-length=64 \
+        --stats-log-level NOTICE \
+        --temp-dir /tmp \
+        --vfs-cache-mode=full \
+        --vfs-write-back=5m \
+        --vfs-read-chunk-size=16M \
+        --vfs-read-chunk-size-limit=0 \
+        --vfs-read-chunk-streams=16
+        --smb-host sambahost \
+        --smb-user $RCLONE_SMB_USER \
+        --smb-port 445 \
+        --smb-pass $RCLONE_SMB_PORT
+
+    # Environment variables associated with container
+    environment:
+      # Timezone of PHP webserver
+      PHP_TZ: Asia/Kolkata
+      # Execute process with user  id 1000
+      PUID: 1000
+      # Execute process with group id 1000
+      PGID: 1000
+    
+    # Volume bindings from host -> container
+    volumes:
+      # Rclone config directory mapping
+      - /srv/rclone/config:/config/rclone
+      # Rclone logs directory mapping
+      - /src/rclone/logs:/logs
+
+    # Additional container capabilities
+    cap_add:
+      # Apply sys admin capability to container (privileged container)
+      - SYS_ADMIN
+      # Use RAW and PACKET sockets; bind to any address for transparent proxying.
+      - NET_RAW
+
+    # Deployment (docker compose up) settings
+    deploy:
+      # Set resource limits
+      resources:
+        # maximum resource limits
+        limits:
+          cpus: '0.1'
+          memory: 512m
+        # minimum resource limits
+        reservations:
+          cpus: '0.05'
+          memory: 32m
+
+    # Healthcheck to ensure glances is working as expected
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5572"]
+      interval: 3m
+      timeout: 15s
+      retries: 3
+      start_period: 60s
+      start_interval: 20s
+  
+  # oauth2-proxy container
+  oauth2-proxy:
+    image: quay.io/oauth2-proxy/oauth2-proxy:latest           # container image
+    container_name: dozzle-oidc                               # container name
+    hostname: ${HOST:?Replace with FQDN for rclone container} # container hostname
+    
+    restart: unless-stopped                                   # Restart the container unless manually stopped
+    
+    command: --config /oauth2-proxy.cfg                       # command to run on container start
+    
+    # volume mapping
+    volumes:
+      - "./oauth2-proxy.cfg:/oauth2-proxy.cfg"                # oauth application configuration
+    
+    # ports to be forwarded from host to container
+    ports:
+      - 4000:4180                                             # forwarding oauth2-proxy port to host
+
+    # Depencencies of Authentik Server Container
+    depends_on:
+      rclone:                                                 # Depends on rclone container
+        condition: service_healthy                            # rclone container must be healthy
+    
+    # Deployment (docker compose up) settings
+    deploy:
+      # Set resource limits
+      resources:
+        # maximum resource limits
+        limits:
+          cpus: '0.05'
+          memory: 128m
+        # minimum resource limits
+        reservations:
+          cpus: '0.01'
+          memory: 32m
