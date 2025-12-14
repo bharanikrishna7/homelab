@@ -1,50 +1,61 @@
 # Docker Compose configuration for setting up a Proxmox Backup Server container
-
+#
+# Proxmox backup server is accessible at -> http://127.0.0.1:4000
 services:
   
   # PBS Container
-  # refer here for additional parameters -> https://tailscale.com/kb/1282/docker
+  # refer here for additional parameters -> https://github.com/ayufan/pve-backup-server-dockerfiles?tab=readme-ov-file
   pbstape:
-    image: ayufan/proxmox-backup-server:v4.0.21-1                         # Pull the latest version of the Tailscale image
-    container_name: pbstape                                               # Name of the tailscale container
-    hostname: ${HOST:?Hostname should be set to FQDN of container}        # Hostname for the tailscale container
+    # container image
+    image: ayufan/proxmox-backup-server:v4.0.21-1
+    # container name
+    container_name: pbstape
+    # container hostname
+    hostname: ${HOST}
     
-    restart: unless-stopped                                               # Restart the container unless manually stopped
+    # restart the container unless manually stopped
+    restart: unless-stopped
     
-    # Ports to be forwarded to host from container
+    # ports to be forwarded from host to container
     ports:
       # Forward proxmox backup server container port
       # 8007 (port on which actual service is running)
       # to host network
-      - '8007:8007'
+      - '4000:8007'
 
-    # Environment variables associated to PBS
+    # environment variables for the container
     environment:
-      TZ: Asia/Kolkata                                                    # set timezone to IST
+      # set timezone
+      TZ: Asia/Kolkata
     
-    # Volume configuration for tailscale data + configuration directory
+    # volume mapping from host to container
     volumes:
-      - /srv/pbs/etc:/etc/proxmox-backup                                  # mapping for /etc/proxmox-backup of container to host /srv/pbs/etc
-      - /srv/pbs/logs:/var/log/proxmox-backup                             # mapping for /var/logs/proxmox-backup of container to host /srv/pbs/lohs
-      - /srv/pbs/lib:/var/lib/proxmox-backup                              # mapping for /var/lib/proxmox-backup of container to host /srv/pbs/lib
+      - /srv/pbs/etc:/etc/proxmox-backup
+      - /srv/pbs/logs:/var/log/proxmox-backup
+      - /srv/pbs/lib:/var/lib/proxmox-backup
     tmpfs:
-      - /run                                                              # mandatory since proxmox-backup-server v2.1.x
+      # mandatory since proxmox-backup-server v2.1.x
+      - /run
     
-    # Additional container capabilities
+    # additional container capabilities
     cap_add:
-      - SYS_RAWIO                                                         # smartctl support
-      - NET_ADMIN                                                         # Apply additional linux capibilities (privileged container)
-      - NET_RAW                                                           # Use RAW and PACKET sockets; bind to any address for transparent proxying.
+      # smartctl support
+      - SYS_RAWIO
+      # apply additional linux capibilities (privileged container)
+      - NET_ADMIN
+      # use RAW and PACKET sockets; bind to any address for transparent proxying.
+      - NET_RAW
     devices:
-      - /dev/nvme0n1                                                      # map your storage device for systemctl support
+      # map your storage device for systemctl support
+      - /dev/nvme0n1
     
-    # docking-station tracking
+    # container labels
     labels:
-      - 'com.loolzzz.docking-station.enabled=true'
+      - 'admins.chekuri.org=true'
     
-    # Deployment (docker compose up) settings
+    # deployment (docker compose up) settings
     deploy:
-      # Set resource limits
+      # set resource limits
       resources:
         # maximum resource limits
         limits:
@@ -55,7 +66,7 @@ services:
           cpus: '0.1'
           memory: 16m
 
-    # Healthcheck to ensure proxmox-backup-service is working as expected
+    # container health check
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8007"]
       interval: 3m
