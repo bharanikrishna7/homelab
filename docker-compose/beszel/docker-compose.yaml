@@ -11,7 +11,7 @@ services:
     # container name
     container_name: beszel
     # container host
-    hostname: ${HOST}
+    hostname: ${SERVER_HOST}
 
     # restart the container unless manually stopped
     restart: unless-stopped
@@ -65,7 +65,7 @@ services:
     # container name
     container_name: beszel-agent
     # container hostname
-    hostname: ${HOST}
+    hostname: ${AGENT_HOST}
 
     # restart the container unless manually stopped
     restart: unless-stopped
