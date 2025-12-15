@@ -86,8 +86,8 @@ services:
 
     # container depencencies
     depends_on:
-      # depends on dozzle container
-      dozzle:
+      # depends on gatus container
+      gatus:
         # container should be healthy
         condition: service_healthy
     
