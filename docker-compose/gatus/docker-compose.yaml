@@ -27,7 +27,7 @@ services:
     # volume mapping from host to container
     volumes:
       # config file mapping
-      - ./config/config.yaml:/config/config.yaml
+      - ./config:/config
 
     # container labels
     labels:
