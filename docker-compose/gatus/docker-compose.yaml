@@ -22,7 +22,7 @@ services:
     # ports to be forwarded to host from container
     ports:
       # forwarding application port
-      - 3080:8080
+      - 3000:8080
 
     # volume mapping from host to container
     volumes:
