@@ -20,9 +20,9 @@ services:
     restart: unless-stopped  
     
     # ports to be forwarded to host from container
-    # ports:
+    ports:
       # forwarding application port
-      # - 8080:8080
+      - 3080:8080
 
     # volume mapping from host to container
     volumes:

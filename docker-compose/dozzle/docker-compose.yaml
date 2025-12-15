@@ -30,7 +30,7 @@ services:
     # Ports to be forwarded to host from container
     ports:
       # forwarding dozzle application port
-       - 3080:8080
+       - 2080:8080
     
     # environment variable for container
     environment:
