@@ -48,7 +48,7 @@ services:
 
     # container health check
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      test: 'netstat -ltn | grep -c ":8080"'
       interval: 120s
       timeout: 15s
       retries: 3
