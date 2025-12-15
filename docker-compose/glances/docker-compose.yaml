@@ -5,50 +5,58 @@ services:
   # Glances Container
   # refer here for additional parameters -> https://hub.docker.com/r/nicolargo/glances
   glances:
-    image: nicolargo/glances:latest                                       # Pull the latest version of the Glances image
-    container_name: glances                                               # Name of the tailscale container
-    hostname: ${HOST:?Please supply FQDN for the container}               # Hostname for the tailscale container
+    # container image
+    image: nicolargo/glances:latest
+    # container name
+    container_name: glances
+    # container hostname
+    hostname: glances-server
     
-    restart: unless-stopped                                               # Restart the container unless manually stopped
+    # restart the container unless manually stopped
+    restart: unless-stopped
     
-    pid: host                                                             # use host's PID namespace and process ID
+    # use host's PID namespace and process ID
+    pid: host
     
     # Ports to be forwarded to host from container
-    ports:
-      - 61208-61209:61208-61209                                           # Forward ports 61208-61209 to host (web UI)
+    # ports:
+    #  - 61208-61209:61208-61209                                           # Forward ports 61208-61209 to host (web UI)
 
-    # Environment variables for Glances service
+    # environment variables for container
     environment:
-      - GLANCES_OPT=-w -t 15                                              # Set glances refresh rate in seconds and enable webserver mode
+      # set glances refresh rate in seconds and enable webserver mode
+      - GLANCES_OPT=-w -t 16
     
-    # Bind docker and os-release from host to container
+    # volume mapping from host to container
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock                         # Bind /var/run/docker.sock from host to container           
-      - /etc/os-release:/etc/os-release:ro                                # Bind /etc/os-release from host to container
+      # bind /var/run/docker.sock from host to container
+      - /var/run/docker.sock:/var/run/docker.sock
+      # bind /etc/os-release from host to container (read only)
+      - /etc/os-release:/etc/os-release:ro
 
     # Additional container capabilities
     cap_add:
       - NET_ADMIN                                                         # Apply additional linux capibilities (privileged container)
       - NET_RAW                                                           # Use RAW and PACKET sockets; bind to any address for transparent proxying.
 
-    # docking-station tracking
+    # container labels
     labels:
-      - 'com.loolzzz.docking-station.enabled=true'     
+      - 'admins.chekuri.org=true'
     
-    # Deployment (docker compose up) settings
+    # deployment (docker compose up) settings
     deploy:
-      # Set resource limits
+      # set resource limits
       resources:
         # maximum resource limits
         limits:
-          cpus: '0.1'
-          memory: 256m
+          cpus: '0.05'
+          memory: 128m
         # minimum resource limits
         reservations:
-          cpus: '0.05'
+          cpus: '0.01'
           memory: 16m
 
-    # Healthcheck to ensure glances is working as expected
+    # container health check
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:61208"]
       interval: 3m
@@ -56,3 +64,52 @@ services:
       retries: 3
       start_period: 60s
       start_interval: 20s
+
+  # oauth2-proxy container
+  oauth2-proxy:
+    # container image
+    image: quay.io/oauth2-proxy/oauth2-proxy:latest
+    # container name
+    container_name: glances-oidc
+    # container hostname
+    hostname: ${HOST}
+    
+    # restart the container unless manually stopped
+    restart: unless-stopped
+    
+    # command to run on container start
+    command: --config /oauth2-proxy.cfg
+    
+    # volume mapping from host to container
+    volumes:
+      # oauth application configuration
+      - "./oauth2-proxy.cfg:/oauth2-proxy.cfg"
+    
+    # ports to be forwarded from host to container
+    ports:
+      # forwarding oauth2-proxy port to host
+      - 6000:4180
+
+    # container labels
+    labels:
+      - 'admins.chekuri.org=true'
+
+    # container dependencies
+    depends_on:
+      # depends on glances container
+      glances:
+        # container must be healthy
+        condition: service_healthy
+    
+    # deployment (docker compose up) settings
+    deploy:
+      # set resource limits
+      resources:
+        # maximum resource limits
+        limits:
+          cpus: '0.05'
+          memory: 128m
+        # minimum resource limits
+        reservations:
+          cpus: '0.01'
+          memory: 32m

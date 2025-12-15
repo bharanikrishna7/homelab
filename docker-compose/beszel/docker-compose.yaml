@@ -45,7 +45,7 @@ services:
     # container health check
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8090"]
-      interval: 60m
+      interval: 60s
       timeout: 15s
       retries: 3
       start_period: 60s
@@ -85,7 +85,7 @@ services:
       resources:
         # maximum resource limits
         limits:
-          cpus: '0.05'
+          cpus: '0.1'
           memory: 64m
         # minimum resource limits
         reservations:

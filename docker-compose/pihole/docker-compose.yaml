@@ -4,52 +4,119 @@
 services:
   # PiHole container
   pihole:
-    image: pihole/pihole:latest                         # Pull latest build of pihole image
-    container_name: pihole                              # Name of the container
-    hostname: ${HOSTNAME:?fqdn for container}           # Hostname of the container
+    # container image
+    image: pihole/pihole:latest
+    # container name
+    container_name: pihole
+    # container host
+    hostname: pihole-service
 
-    restart: unless-stopped                             # Restart the container unless manually stopped
+    # restart the container unless manually stopped
+    restart: unless-stopped
     
+    # ports to forward from host to container
     ports:
-      - "53:53/tcp"                                     # DNS Ports
-      - "53:53/udp"                                     # DNS Ports
-      - "80:80/tcp"                                     # Default HTTP Port
-      - "443:443/tcp"                                   # Default HTTPs Port.
+      # DNS Ports
+      - "8053:53/tcp"
+      - "8053:53/udp"
+      # HTTP Port
+      - "8000:80/tcp"
+      # HTTPs Port
+      - "8443:443/tcp"
       # Uncomment the below if using Pi-hole as your DHCP Server
-      #- "67:67/udp"
+      #- "8067:67/udp"
       # Uncomment the line below if you are using Pi-hole as your NTP server
-      #- "123:123/udp"
+      #- "8123:123/udp"
     
-    # Environment variables associated with PiHole 
+    # environment variables for container
     environment:
-      # Set the appropriate timezone for your location from
+      # set the appropriate timezone for your location from
       # https://en.wikipedia.org/wiki/List_of_tz_database_time_zones, e.g:
       TZ: 'Asia/Kolkata'
-      # Set a password to access the web interface. Not setting one will result in a random password being assigned
-      FTLCONF_webserver_api_password: '${WEBSERVER_PASSWORD:?set password for web login}'
-      # If using Docker's default `bridge` network setting the dns listening mode should be set to 'ALL'
+      # set a password to access the web interface. 
+      # setting it to blank disables password
+      FTLCONF_webserver_api_password: '${NO_PASSWORD}'
+      # if using Docker's default `bridge` network setting the dns listening mode should be set to 'ALL'
       FTLCONF_dns_listeningMode: 'ALL'
     
-    # Volumes store your data between container upgrades
+    # volume mapping from host to container
     volumes:
       # For persisting Pi-hole's databases and common configuration file
-      - '/etc/pihole:/etc/pihole'
+      - '/srv/pihole/etc:/etc/pihole'
       # Uncomment the below if you have custom dnsmasq config files that you want to persist. Not needed for most starting fresh with Pi-hole v6. If you're upgrading from v5 you and have used this directory before, you should keep it enabled for the first v6 container start to allow for a complete migration. It can be removed afterwards. Needs environment variable FTLCONF_misc_etc_dnsmasq_d: 'true'
       #- './etc-dnsmasq.d:/etc/dnsmasq.d'
 
-    # Container labels for additional metadata
+    # container labels
     labels:
-      - "com.centurylinklabs.watchtower.enable=true"                      # Enable automatic updates with Watchtower
+      - 'admins.chekuri.org=true'
 
-    # Deployment (docker compose up) settings
+    # container health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 60s
+      timeout: 15s
+      retries: 3
+      start_period: 60s
+      start_interval: 20s
+
+    # deployment (docker compose up) settings
     deploy:
-      # Set resource limits
+      # set resource limits
       resources:
         # maximum resource limits
         limits:
-          cpus: '0.5'
+          cpus: '0.1'
           memory: 1024m
         # minimum resource limits
         reservations:
-          cpus: '0.1'
+          cpus: '0.05'
+          memory: 32m
+
+  # oauth2-proxy container
+  oauth2-proxy:
+    # container image
+    image: quay.io/oauth2-proxy/oauth2-proxy:latest
+    # container name
+    container_name: pihole-oidc
+    # container hostname
+    hostname: ${HOST}
+    
+    # restart the container unless manually stopped
+    restart: unless-stopped
+    
+    # command to run on container start
+    command: --config /oauth2-proxy.cfg
+    
+    # volume mapping from host to container
+    volumes:
+      # oauth application configuration
+      - "./oauth2-proxy.cfg:/oauth2-proxy.cfg"
+    
+    # ports to be forwarded from host to container
+    ports:
+      # forwarding oauth2-proxy port to host
+      - 8000:4180
+
+    # container labels
+    labels:
+      - 'admins.chekuri.org=true'
+
+    # container dependencies
+    depends_on:
+      # depends on pihole container
+      pihole:
+        # container must be healthy
+        condition: service_healthy
+    
+    # deployment (docker compose up) settings
+    deploy:
+      # set resource limits
+      resources:
+        # maximum resource limits
+        limits:
+          cpus: '0.05'
+          memory: 128m
+        # minimum resource limits
+        reservations:
+          cpus: '0.01'
           memory: 32m

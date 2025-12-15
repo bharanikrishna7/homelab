@@ -1,5 +1,6 @@
 # Docker Compose configuration for setting up RClone container
-
+#
+# This service can be accessed at -> http://localhost:5000
 services:
   
   # RClone Container
@@ -101,7 +102,7 @@ services:
   # oauth2-proxy container
   oauth2-proxy:
     image: quay.io/oauth2-proxy/oauth2-proxy:latest           # container image
-    container_name: dozzle-oidc                               # container name
+    container_name: rclone-oidc                               # container name
     hostname: ${HOST:?Replace with FQDN for rclone container} # container hostname
     
     restart: unless-stopped                                   # Restart the container unless manually stopped
@@ -114,7 +115,7 @@ services:
     
     # ports to be forwarded from host to container
     ports:
-      - 3000:4180                                             # forwarding oauth2-proxy port to host
+      - 5000:4180                                             # forwarding oauth2-proxy port to host
 
     # Depencencies of Authentik Server Container
     depends_on:

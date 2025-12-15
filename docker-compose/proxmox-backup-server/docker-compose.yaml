@@ -1,6 +1,6 @@
 # Docker Compose configuration for setting up a Proxmox Backup Server container
 #
-# Proxmox backup server is accessible at -> http://127.0.0.1:4000
+# Proxmox backup server is accessible at -> http://127.0.0.1:7000
 services:
   
   # PBS Container
@@ -21,7 +21,7 @@ services:
       # Forward proxmox backup server container port
       # 8007 (port on which actual service is running)
       # to host network
-      - '4000:8007'
+      - '7000:8007'
 
     # environment variables for the container
     environment:

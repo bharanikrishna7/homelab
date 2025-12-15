@@ -2,6 +2,8 @@
 #
 # This container will be responsible for monitoring services are
 # up and running
+#
+# This service would be accessible at -> http://localhost:7000
 services:
   
   # Gatus Container
@@ -20,7 +22,7 @@ services:
     # ports to be forwarded to host from container
     ports:
       # forwarding application port
-      - 7000:8080
+      - 3000:8080
 
     # volume mapping from host to container
     volumes:
