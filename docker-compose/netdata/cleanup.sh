@@ -1,4 +1,4 @@
 #!/bin/bash
 
-service=pbs
+service=netdata
 bash ../../scripts/cleanup.sh $service

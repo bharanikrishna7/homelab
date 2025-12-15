@@ -1,4 +1,4 @@
 #!/bin/bash
 
-service=pbs
+service=rclone
 bash ../../scripts/cleanup.sh $service

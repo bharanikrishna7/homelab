@@ -1,4 +1,4 @@
 #!/bin/bash
 
-service=pbs
+service=authentik
 bash ../../scripts/cleanup.sh $service

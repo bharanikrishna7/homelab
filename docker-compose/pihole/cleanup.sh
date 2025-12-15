@@ -1,4 +1,4 @@
 #!/bin/bash
 
-service=pbs
+service=pihole
 bash ../../scripts/cleanup.sh $service

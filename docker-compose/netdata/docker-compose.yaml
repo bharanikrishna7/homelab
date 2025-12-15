@@ -31,9 +31,10 @@ services:
 
     # Volume configuration for netdata
     volumes:
-      - /var/etc/netdata:/etc/netdata                     # netdata configuration
-      - /var/lib/netdata:/var/lib/netdata                 # netdatada library
-      - /var/cache/netdata:/var/cache/netdata             # netdata cache
+      - /srv/netdata/etc:/etc/netdata                     # netdata configuration
+      - /srv/netdata/var/lib:/var/lib/netdata             # netdatada library
+      - /srv/netdata/var/cache:/var/cache/netdata         # netdata cache
+      
       - /:/host/root:ro,rslave                            # map host's / to container
       - /etc/passwd:/host/etc/passwd:ro                   # map host's /etc/passwd to container
       - /etc/group:/host/etc/group:ro                     # map host's /etc/group to container

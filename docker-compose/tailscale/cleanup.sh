@@ -1,4 +1,4 @@
 #!/bin/bash
 
-service=pbs
+service=tailscale
 bash ../../scripts/cleanup.sh $service
