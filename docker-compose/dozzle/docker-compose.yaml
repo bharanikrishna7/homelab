@@ -59,8 +59,8 @@ services:
     # container health check
     healthcheck:
       test: ["CMD", "/dozzle", "healthcheck"]
-      interval: 3s
-      timeout: 30s
+      interval: 120s
+      timeout: 5s
       retries: 5
       start_period: 30s
 

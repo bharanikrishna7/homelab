@@ -53,11 +53,11 @@ services:
     # container health check
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:80"]
-      interval: 60s
-      timeout: 15s
+      interval: 120s
+      timeout: 5s
       retries: 3
-      start_period: 60s
-      start_interval: 20s
+      start_period: 45s
+      start_interval: 40s
 
     # deployment (docker compose up) settings
     deploy:

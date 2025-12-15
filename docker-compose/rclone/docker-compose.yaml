@@ -93,11 +93,11 @@ services:
     # Healthcheck to ensure glances is working as expected
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5572"]
-      interval: 3m
-      timeout: 15s
+      interval: 120s
+      timeout: 5s
       retries: 3
-      start_period: 60s
-      start_interval: 20s
+      start_period: 30s
+      start_interval: 25s
   
   # oauth2-proxy container
   oauth2-proxy:
@@ -117,7 +117,7 @@ services:
     ports:
       - 5000:4180                                             # forwarding oauth2-proxy port to host
 
-    # Depencencies of Authentik Server Container
+    # container dependencies
     depends_on:
       rclone:                                                 # Depends on rclone container
         condition: service_healthy                            # rclone container must be healthy

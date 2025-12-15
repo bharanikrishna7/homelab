@@ -57,9 +57,9 @@ services:
       # check if cloudflared version command works
       test: ["CMD", "cloudflared", "--version"]
       # time between health check attempts
-      interval: 30s
+      interval: 60s
       # time to wait for a response
-      timeout: 10s
+      timeout: 5s
       # number of retries before marking as unhealthy
       retries: 3
       # delay before health checks begin

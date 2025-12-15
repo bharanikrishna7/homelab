@@ -69,8 +69,8 @@ services:
     # container health check
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8007"]
-      interval: 3m
-      timeout: 15s
+      interval: 120s
+      timeout: 5s
       retries: 3
-      start_period: 60s
+      start_period: 30s
       start_interval: 20s
