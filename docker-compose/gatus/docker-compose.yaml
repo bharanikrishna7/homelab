@@ -56,11 +56,11 @@ services:
       start_interval: 30s
 
   # oauth2-proxy container
-  oauth2-proxy:
+  gatus-oauth2-proxy:
     # container image
     image: quay.io/oauth2-proxy/oauth2-proxy:latest
     # container name
-    container_name: gatus-oidc
+    container_name: gatus-oauth2-proxy
     # container hostname
     hostname: ${HOST}
     

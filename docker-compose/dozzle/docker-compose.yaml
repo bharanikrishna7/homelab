@@ -28,9 +28,9 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
     # Ports to be forwarded to host from container
-    # ports:
-    #   forwarding dozzle application port
-    #   - 8080:8080
+    ports:
+      # forwarding dozzle application port
+       - 3080:8080
     
     # environment variable for container
     environment:
@@ -72,11 +72,11 @@ services:
           memory: 64m
 
   # oauth2-proxy container
-  oauth2-proxy:
+  dozzle-oauth2-proxy:
     # container image
     image: quay.io/oauth2-proxy/oauth2-proxy:latest
     # container name
-    container_name: dozzle-oidc
+    container_name: dozzle-oauth2-proxy
     # container hostname
     hostname: ${HOSTNAME}
     
