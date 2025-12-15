@@ -1,0 +1,10 @@
+docker-compose/authentik/.env
+docker-compose/beszel/.env
+docker-compose/cloudflared/.env
+docker-compose/dozzle/.env
+docker-compose/gatus/.env
+docker-compose/glances/.env
+docker-compose/pihole/.env
+docker-compose/proxmox-backup-server/.env
+docker-compose/rclone/.env
+docker-compose/tailscale/.env
