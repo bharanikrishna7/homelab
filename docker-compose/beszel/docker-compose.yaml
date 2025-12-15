@@ -85,7 +85,7 @@ services:
     
     # environment variables for container
     environment:
-      LISTEN: /beszel_socket/beszel.sock
+      LISTEN: 45876
       HUB_URL: http://localhost:8090
       TOKEN: ${BESZEL_TOKEN}
       KEY: ${BESZEL_KEY}
