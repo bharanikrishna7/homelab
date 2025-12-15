@@ -8,9 +8,9 @@ Homelab
 | Tailscale             | [source](docker-compose/tailscale/)             |  `n/a` |
 | Authentik             | [source](docker-compose/authentik/)             | `1000` |
 | Dozzle                | [source](docker-compose/dozzle/)                | `2000` |
-| RClone                | [source](docker-compose/rclone/)                | `3000` |
-| Proxmox Backup Server | [source](docker-compose/proxmox-backup-server/) | `4000` |
-| Netdata               | [source](docker-compose/netdata/)               | `5000` |
-| PiHole                | [source](docker-compose/pihole/)                | `6000` |
-| Gatus                 | [source](docker-compose/gatus/)                 | `7000` |
-| Glances               | [source](docker-compose/glances/)               | `8000` |
+| Gatus                 | [source](docker-compose/gatus/)                 | `3000` |
+| Beszel                | [source](docker-compose/beszel/)                | `4000` |
+| RClone                | [source](docker-compose/rclone/)                | `5000` |
+| Glances               | [source](docker-compose/glances/)               | `6000` |
+| Proxmox Backup Server | [source](docker-compose/proxmox-backup-server/) | `7000` |
+| PiHole                | [source](docker-compose/pihole/)                | `8000` |

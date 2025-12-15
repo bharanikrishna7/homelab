@@ -1,0 +1,102 @@
+# Docker Compose configuration for setting up Beszel container
+#
+# Beszel will be responsible for
+# monitoring status of machines
+services:
+
+  # Beszel service
+  beszel:
+    # container image
+    image: henrygd/beszel:latest
+    # container name
+    container_name: beszel
+    # container host
+    hostname: ${HOST}
+
+    # restart the container unless manually stopped
+    restart: unless-stopped
+
+    # port mapping from host to container
+    ports:
+      - 4000:8090
+    
+    # volume mapping from host to container
+    volumes:
+      - /srv/beszel/data:/beszel_data
+      - /srv/beszel/socket:/beszel_socket
+
+    # container labels
+    labels:
+      - 'admins.chekuri.org=true'  
+    
+    # deployment (docker compose up) settings
+    deploy:
+      # set resource limits
+      resources:
+        # maximum resource limits
+        limits:
+          cpus: '0.1'
+          memory: 256m
+        # minimum resource limits
+        reservations:
+          cpus: '0.05'
+          memory: 16m
+
+    # container health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8090"]
+      interval: 60m
+      timeout: 15s
+      retries: 3
+      start_period: 60s
+      start_interval: 20s
+
+  # Beszel Agent service
+  beszel-agent:
+    # container image
+    image: henrygd/beszel-agent:latest
+    # container name
+    container_name: beszel-agent
+    # container hostname
+    hostname: ${HOST}
+
+    # restart the container unless manually stopped
+    restart: unless-stopped
+
+    # use host network
+    network_mode: host
+
+    # environment variables for container
+    environment:
+      LISTEN: /beszel_socket/beszel.sock
+      HUB_URL: http://localhost:8090
+      TOKEN: ${BESZEL_TOKEN}
+      KEY: ${BESZEL_KEY}
+
+    # volume mapping from host to container
+    volumes:
+      - /srv/beszel/agent/data:/var/lib/beszel-agent
+      - /srv/beszel/socket:/beszel_socket
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    
+    # deployment (docker compose up) settings
+    deploy:
+      # set resource limits
+      resources:
+        # maximum resource limits
+        limits:
+          cpus: '0.05'
+          memory: 64m
+        # minimum resource limits
+        reservations:
+          cpus: '0.01'
+          memory: 8m
+
+    # container health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8090"]
+      interval: 60m
+      timeout: 15s
+      retries: 3
+      start_period: 60s
+      start_interval: 20s
