@@ -3,7 +3,7 @@
 # This container will be responsible for monitoring services are
 # up and running
 #
-# This service would be accessible at -> http://localhost:7000
+# This service would be accessible at -> http://localhost:3000
 services:
   
   # Gatus Container
@@ -14,7 +14,7 @@ services:
     # container name
     container_name: gatus
     # container hostname
-    hostname: gatus
+    hostname: ${HOSTNAME}
     
     # restart the container unless manually stopped
     restart: unless-stopped  
@@ -22,7 +22,7 @@ services:
     # ports to be forwarded to host from container
     ports:
       # forwarding application port
-      - 3080:8080
+      - 3000:8080
 
     # volume mapping from host to container
     volumes:
@@ -54,52 +54,3 @@ services:
       retries: 3
       start_period: 60s
       start_interval: 30s
-
-  # oauth2-proxy container
-  gatus-oauth2-proxy:
-    # container image
-    image: quay.io/oauth2-proxy/oauth2-proxy:latest
-    # container name
-    container_name: gatus-oauth2-proxy
-    # container hostname
-    hostname: ${HOSTNAME}
-    
-    # restart the container unless manually stopped
-    restart: unless-stopped
-    
-    # command to run on container start
-    command: --config /oauth2-proxy.cfg
-    
-    # volume mapping from host to container
-    volumes:
-      # oauth application configuration
-      - "./oauth2-proxy.cfg:/oauth2-proxy.cfg"
-    
-    # ports to be forwarded from host to container
-    ports:
-      # forwarding oauth2-proxy port (4180) to host ()
-      - 3000:4180
-
-    # container labels
-    labels:
-      - 'admins.chekuri.org=true'
-
-    # container depencencies
-    depends_on:
-      # depends on dozzle container
-      gatus:
-        # container should be healthy
-        condition: service_healthy
-    
-    # deployment (docker compose up) settings
-    deploy:
-      # set resource limits
-      resources:
-        # maximum resource limits
-        limits:
-          cpus: '0.05'
-          memory: 128m
-        # minimum resource limits
-        reservations:
-          cpus: '0.01'
-          memory: 32m
