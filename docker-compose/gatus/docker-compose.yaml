@@ -14,7 +14,7 @@ services:
     # container name
     container_name: gatus
     # container hostname
-    hostname: ${HOST}
+    hostname: gatus
     
     # restart the container unless manually stopped
     restart: unless-stopped  
