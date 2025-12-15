@@ -81,7 +81,7 @@ services:
     - SYS_ADMIN
 
     devices:
-    - /dev/${NVME_DEVICE}:/dev/nvme
+    - /dev/${NVME_DEVICE}:/dev/${NVME_DEVICE}
     
     # environment variables for container
     environment:
