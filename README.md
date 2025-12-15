@@ -11,5 +11,6 @@ Homelab
 | RClone                | [source](docker-compose/rclone/)                | `3000` |
 | Proxmox Backup Server | [source](docker-compose/proxmox-backup-server/) | `4000` |
 | Netdata               | [source](docker-compose/netdata/)               | `5000` |
-| Glances               | [source](docker-compose/glances/)               | `6000` |
-| PiHole                | [source](docker-compose/pihole/)                | `7000` |
+| PiHole                | [source](docker-compose/pihole/)                | `6000` |
+| Gatus                 | [source](docker-compose/gatus/)                 | `7000` |
+| Glances               | [source](docker-compose/glances/)               | `8000` |
