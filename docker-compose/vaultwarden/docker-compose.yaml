@@ -54,8 +54,8 @@ services:
       resources:
         # maximum resource limits
         limits:
-          cpus: '0.5'
-          memory: 4096m
+          cpus: '0.7'
+          memory: 1024m
         # minimum resource limits
         reservations:
           cpus: '0.1'
