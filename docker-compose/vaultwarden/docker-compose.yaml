@@ -43,3 +43,20 @@ services:
     # port forwarding to host from container
     ports:
       - 2000:80
+    
+    # container labels
+    labels:
+      - 'admins.chekuri.org=true'
+    
+    # deployment (docker compose up) settings
+    deploy:
+      # set resource limits
+      resources:
+        # maximum resource limits
+        limits:
+          cpus: '0.5'
+          memory: 4096m
+        # minimum resource limits
+        reservations:
+          cpus: '0.1'
+          memory: 16m
