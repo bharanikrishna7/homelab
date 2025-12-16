@@ -36,7 +36,7 @@ services:
       
       # set a password to access the web interface.
       # uncomment the following line to enable password, else there'll be no password
-      FTLCONF_webserver_api_password:                         # no password
+      FTLCONF_webserver_api_password: ''                      # no password
       #FTLCONF_webserver_api_password: ${WEBSERVER_PASSWORD}  # use password
       
       
@@ -53,15 +53,6 @@ services:
     # container labels
     labels:
       - 'admins.chekuri.org=true'
-
-    # container health check
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/admin"]
-      interval: 120s
-      timeout: 5s
-      retries: 3
-      start_period: 45s
-      start_interval: 40s
 
     # deployment (docker compose up) settings
     deploy:
