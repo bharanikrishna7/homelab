@@ -30,7 +30,7 @@ services:
     # Ports to be forwarded to host from container
     ports:
       # forwarding dozzle application port
-       - 2080:8080
+       - 3080:8080
     
     # environment variable for container
     environment:
@@ -93,7 +93,7 @@ services:
     
     # ports to be forwarded from host to container
     ports:
-      # forwarding oauth2-proxy port (4180) to host ()
+      # forwarding oauth2-proxy port (4180) to host (2000)
       - 3000:4180
 
     # container labels
