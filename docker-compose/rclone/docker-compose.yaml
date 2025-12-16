@@ -11,7 +11,7 @@ services:
     # Name of the container
     container_name: rclone
     # Hostname of the container
-    hostname: ${HOST:?Please supply FQDN for the rclone container}
+    hostname: rclone
     
     # Restart the container unless manually stopped
     restart: unless-stopped
@@ -103,7 +103,7 @@ services:
   oauth2-proxy:
     image: quay.io/oauth2-proxy/oauth2-proxy:latest           # container image
     container_name: rclone-oidc                               # container name
-    hostname: ${HOST:?Replace with FQDN for rclone container} # container hostname
+    hostname: ${HOST}                                         # container hostname
     
     restart: unless-stopped                                   # Restart the container unless manually stopped
     
