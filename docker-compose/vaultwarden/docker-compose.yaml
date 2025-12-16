@@ -34,6 +34,14 @@ services:
       SSO_ONLY: true # Set to true to disable email+master password login and require SSO
       SSO_SIGNUPS_MATCH_EMAIL: true # Match first SSO login to existing account by email
 
+      # mailserver configuration
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_FROM: ${SMTP_FROM}
+      SMTP_USERNAME: ${SMTP_USERNAME}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
+      SMTP_PORT: 587
+      SMTP_SECURITY: starttls
+      
       # rocket settings
       ROCKET_WORKERS: 10
       ROCKET_LIMITS: '{json=4194304}'
