@@ -94,7 +94,7 @@ services:
     # ports to be forwarded from host to container
     ports:
       # forwarding oauth2-proxy port (4180) to host ()
-      - 2000:4180
+      - 3000:4180
 
     # container labels
     labels:
