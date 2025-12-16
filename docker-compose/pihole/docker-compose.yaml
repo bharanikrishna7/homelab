@@ -9,7 +9,7 @@ services:
     # container name
     container_name: pihole
     # container host
-    hostname: pihole-service
+    hostname: pihole
 
     # restart the container unless manually stopped
     restart: unless-stopped
@@ -20,7 +20,7 @@ services:
       - "8053:53/tcp"
       - "8053:53/udp"
       # HTTP Port
-      - "8000:80/tcp"
+      - "8080:80/tcp"
       # HTTPs Port
       - "8443:443/tcp"
       # Uncomment the below if using Pi-hole as your DHCP Server
@@ -33,9 +33,9 @@ services:
       # set the appropriate timezone for your location from
       # https://en.wikipedia.org/wiki/List_of_tz_database_time_zones, e.g:
       TZ: 'Asia/Kolkata'
-      # set a password to access the web interface. 
+      # set a password to access the web interface.
       # setting it to blank disables password
-      FTLCONF_webserver_api_password: '${NO_PASSWORD}'
+      FTLCONF_webserver_api_password: ${WEBSERVER_PASSWORD}
       # if using Docker's default `bridge` network setting the dns listening mode should be set to 'ALL'
       FTLCONF_dns_listeningMode: 'ALL'
     
@@ -52,7 +52,7 @@ services:
 
     # container health check
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/admin"]
       interval: 120s
       timeout: 5s
       retries: 3
@@ -73,13 +73,13 @@ services:
           memory: 32m
 
   # oauth2-proxy container
-  oauth2-proxy:
+  pihole-oauth2-proxy:
     # container image
     image: quay.io/oauth2-proxy/oauth2-proxy:latest
     # container name
-    container_name: pihole-oidc
+    container_name: pihole-oauth2-proxy
     # container hostname
-    hostname: ${HOST}
+    hostname: ${HOSTNAME}
     
     # restart the container unless manually stopped
     restart: unless-stopped
