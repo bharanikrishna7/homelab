@@ -1,0 +1,45 @@
+# Docker Compose configuration for setting up Vaultwarden container
+#
+# Vaultwarden be accessible at -> http://127.0.0.1:2000
+services:
+  # VaultWarden container
+  vaultwarden:
+    # container image
+    image: vaultwarden/server:latest
+    # container name
+    container_name: vaultwarden
+    # container hostname
+    hostname: ${HOSTNAME}
+
+    # restart container unless manually stopped
+    restart: unless-stopped
+    
+    # set environment variables in container
+    environment:
+      # required for reverse proxy
+      DOMAIN: "https://${HOSTNAME}"
+      # enable admin page at -> http://127.0.0.1:80/admin
+      ADMIN_TOKEN: ${VAULTWARDEN_ADMIN_TOKEN}
+      # disable creating new users via invitations
+      INVITATIONS_ALLOWED: false
+
+      # authentication configuration
+      SSO_ENABLED: true
+      SSO_ONLY: true
+      SSO_SIGNUPS_MATCH_EMAIL: true
+      SSO_AUTHORITY: ${SSO_AUTHORITY}
+      SSO_SCOPES: "email profile offline_access"
+      SSO_CLIENT_ID: ${SSO_CLIENT_ID}
+      SSO_CLIENT_SECRET: ${SSO_CLIENT_SECRET}
+
+      # rocket settings
+      ROCKET_WORKERS: 10
+      ROCKET_LIMITS: '{json=4194304}'
+
+    # volume mapping from host to container
+    volumes:
+      - /srv/vaultwarden/:/data/
+    
+    # port forwarding to host from container
+    ports:
+      - 2000:80
