@@ -5,7 +5,7 @@ services:
   # VaultWarden container
   vaultwarden:
     # container image
-    image: vaultwarden/server:latest
+    image: vaultwarden/server:testing-alpine
     # container name
     container_name: vaultwarden
     # container hostname
