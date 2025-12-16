@@ -17,25 +17,27 @@ services:
     # ports to forward from host to container
     ports:
       # DNS Ports
-      - "8053:53/tcp"
-      - "8053:53/udp"
+      - "53:53/tcp"
+      - "53:53/udp"
       # HTTP Port
       - "8080:80/tcp"
       # HTTPs Port
       - "8443:443/tcp"
       # Uncomment the below if using Pi-hole as your DHCP Server
-      #- "8067:67/udp"
+      #- "67:67/udp"
       # Uncomment the line below if you are using Pi-hole as your NTP server
-      #- "8123:123/udp"
+      #- "123:123/udp"
     
     # environment variables for container
     environment:
       # set the appropriate timezone for your location from
       # https://en.wikipedia.org/wiki/List_of_tz_database_time_zones, e.g:
       TZ: 'Asia/Kolkata'
+      
       # set a password to access the web interface.
       # uncomment the following line to enable password, else there'll be no password
       #FTLCONF_webserver_api_password: ${WEBSERVER_PASSWORD}
+      
       # if using Docker's default `bridge` network setting the dns listening mode should be set to 'ALL'
       FTLCONF_dns_listeningMode: 'ALL'
     
