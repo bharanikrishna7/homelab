@@ -108,13 +108,7 @@ services:
         condition: service_healthy
     
     # container health check
-    healthcheck:
-      test: 'netstat -ltn | grep -c ":4180"'
-      interval: 120s
-      timeout: 15s
-      retries: 3
-      start_period: 60s
-      start_interval: 30s
+    # not possible in distroless containers
     
     # deployment (docker compose up) settings
     deploy:
