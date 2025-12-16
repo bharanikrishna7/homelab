@@ -34,8 +34,8 @@ services:
       # https://en.wikipedia.org/wiki/List_of_tz_database_time_zones, e.g:
       TZ: 'Asia/Kolkata'
       # set a password to access the web interface.
-      # setting it to blank disables password
-      FTLCONF_webserver_api_password: ${WEBSERVER_PASSWORD}
+      # uncomment the following line to enable password, else there'll be no password
+      #FTLCONF_webserver_api_password: ${WEBSERVER_PASSWORD}
       # if using Docker's default `bridge` network setting the dns listening mode should be set to 'ALL'
       FTLCONF_dns_listeningMode: 'ALL'
     
