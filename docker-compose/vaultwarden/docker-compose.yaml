@@ -27,6 +27,7 @@ services:
       SSO_ENABLED: true
       SSO_ONLY: true
       SSO_SIGNUPS_MATCH_EMAIL: true
+      SSO_ALLOW_UNKNOWN_EMAIL_VERIFICATION: true
       SSO_AUTHORITY: ${SSO_AUTHORITY}
       SSO_SCOPES: "email profile offline_access"
       SSO_CLIENT_ID: ${SSO_CLIENT_ID}
