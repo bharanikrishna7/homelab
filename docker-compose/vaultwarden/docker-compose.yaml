@@ -9,7 +9,7 @@ services:
     # container name
     container_name: vaultwarden
     # container hostname
-    hostname: ${HOSTNAME}
+    hostname: vaultwarden
 
     # restart container unless manually stopped
     restart: unless-stopped
