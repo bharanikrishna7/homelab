@@ -36,7 +36,9 @@ services:
       
       # set a password to access the web interface.
       # uncomment the following line to enable password, else there'll be no password
-      #FTLCONF_webserver_api_password: ${WEBSERVER_PASSWORD}
+      FTLCONF_webserver_api_password:                         # no password
+      #FTLCONF_webserver_api_password: ${WEBSERVER_PASSWORD}  # use password
+      
       
       # if using Docker's default `bridge` network setting the dns listening mode should be set to 'ALL'
       FTLCONF_dns_listeningMode: 'ALL'
