@@ -25,7 +25,7 @@ services:
       # required for OAuth2 to function
       USER_CREATION: true
       # required for reverse proxy
-      APP_URL: https://${SERVER_HOST}
+      APP_URL: ${REVERSE_PROXY_URL}
     
     # volume mapping from host to container
     volumes:
