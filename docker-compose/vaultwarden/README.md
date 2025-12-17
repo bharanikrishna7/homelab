@@ -1,4 +1,7 @@
 # Vaultwarden
+<img src="icon.png" alt="icon" width="100" />
+
+[Documentation](https://github.com/dani-garcia/vaultwarden)
 
 ## OIDC SSO Cofiguration
 It is necessary that your OIDC/Oauth2 provider responds `TRUE` for claim __`email_verified`__. 
