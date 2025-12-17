@@ -12,7 +12,7 @@ services:
     # container name
     container_name: cloudflared
     # container host
-    hostname: ${HOST}
+    hostname: cloudflared
     
     # restart the container unless manually stopped
     restart: unless-stopped

@@ -78,7 +78,7 @@ services:
     # container name
     container_name: dozzle-oauth2-proxy
     # container hostname
-    hostname: ${HOSTNAME}
+    hostname: dozzle-oidc
     
     # restart the container unless manually stopped
     restart: unless-stopped

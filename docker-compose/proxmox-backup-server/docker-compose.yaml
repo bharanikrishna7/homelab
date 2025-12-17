@@ -11,7 +11,7 @@ services:
     # container name
     container_name: pbstape
     # container hostname
-    hostname: ${HOST}
+    hostname: pbstape
     
     # restart the container unless manually stopped
     restart: unless-stopped

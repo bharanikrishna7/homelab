@@ -75,7 +75,7 @@ services:
     # container name
     container_name: authentik
     # container hostname
-    hostname: ${HOSTNAME}
+    hostname: authentik
     
     # restart the container unless manually stopped
     restart: unless-stopped

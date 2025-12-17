@@ -74,7 +74,7 @@ services:
     # container name
     container_name: pihole-oauth2-proxy
     # container hostname
-    hostname: ${HOSTNAME}
+    hostname: pihole-oidc
     
     # restart the container unless manually stopped
     restart: unless-stopped

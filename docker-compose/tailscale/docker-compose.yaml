@@ -14,7 +14,7 @@ services:
     # container name
     container_name: tailscale
     # container host
-    hostname: ${HOST}
+    hostname: tailscale
     
     # restart the container unless manually stopped
     restart: unless-stopped
