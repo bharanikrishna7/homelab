@@ -33,6 +33,7 @@ services:
       - /srv/pbs/etc:/etc/proxmox-backup
       - /srv/pbs/logs:/var/log/proxmox-backup
       - /srv/pbs/lib:/var/lib/proxmox-backup
+      # add extra mounts here
     tmpfs:
       # mandatory since proxmox-backup-server v2.1.x
       - /run
