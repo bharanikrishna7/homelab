@@ -57,7 +57,7 @@ services:
       resources:
         # maximum resource limits
         limits:
-          cpus: '1'
+          cpus: '2'
           memory: 2048m
         # minimum resource limits
         reservations:
@@ -125,7 +125,7 @@ services:
       resources:
         # maximum resource limits
         limits:
-          cpus: '1.5'
+          cpus: '2'
           memory: 2048m
         # minimum resource limits
         reservations:
@@ -201,7 +201,7 @@ services:
       resources:
         # maximum resource limits
         limits:
-          cpus: '1.5'
+          cpus: '2'
           memory: 2048m
         # minimum resource limits
         reservations:
