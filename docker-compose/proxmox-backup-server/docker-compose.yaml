@@ -12,6 +12,8 @@ services:
     container_name: pbstape
     # container hostname
     hostname: pbstape
+    # run container in privileged mode (required for nfs)
+    privileged: true
     
     # restart the container unless manually stopped
     restart: unless-stopped
