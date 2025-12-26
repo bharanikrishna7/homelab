@@ -28,5 +28,5 @@ services:
       - TZ=Asia/Kolkata
 
     volumes:
-      - ${ENV_NEXTCLOUD_CONFIG_DIR}:/config
-      - ${ENV_NEXTCLOUD_DATA_DIR}:/data
+      - ${NEXTCLOUD_CONFIG_DIR}:/config
+      - ${NEXTCLOUD_DATA_DIR}:/data
