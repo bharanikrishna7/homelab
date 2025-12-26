@@ -1,0 +1,32 @@
+# Docker Compose configuration for setting up Nextcloud container
+# More info at https://hub.docker.com/r/linuxserver/nextcloud
+
+services:
+  # Nextcloud AIO container
+  nextcloud:
+    # container image
+    image: lscr.io/linuxserver/nextcloud:latest
+    # container name
+    container_name: nextcloud
+    # container host
+    hostname: nextcloud
+
+    # restart the container unless manually stopped
+    restart: unless-stopped
+    # This setting makes sure that signals from main process inside the container are correctly forwarded to children. 
+    # See https://docs.docker.com/reference/compose-file/services/#init
+    init: true
+    
+
+    # ports to forward from host to container
+    ports:
+      - 443:443
+    
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Kolkata
+
+    volumes:
+      - ${ENV_NEXTCLOUD_CONFIG_DIR}:/config
+      - ${ENV_NEXTCLOUD_DATA_DIR}:/data
