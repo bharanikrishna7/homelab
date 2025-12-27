@@ -1,0 +1,33 @@
+# Docker Compose configuration for setting up Frigate container
+# More info at https://docs.frigate.video/frigate/installation/
+
+services:
+  # Frigate
+  frigate:
+    # container image
+    image: ghcr.io/blakeblackshear/frigate:stable
+    # container name
+    container_name: frigate
+    # container hostname
+    hostname: frigate
+    
+    # restart the container unless manually stopped
+    restart: unless-stopped
+    # grace period for container to stop
+    stop_grace_period: 30s
+
+    # Ports to forward (host <-> container)
+    ports:
+      - "8971:8971" # WebUI
+      - "8554:8554" # RTSP feeds
+
+    volumes:
+      # replace with your desired config directory
+      - ${CONFIG_DIRECTORY:/srv/frigate}:/config
+      # replace with your desired storage directory
+      - ${STORAGE_DIRECTORY:/mnt/frigate}:/media/frigate
+      # Optional: 1GB of memory, reduces SSD/SD Card wear
+      - type: tmpfs
+        target: /tmp/cache
+        tmpfs:
+          size: 1000000000
