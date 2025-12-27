@@ -31,3 +31,8 @@ services:
         target: /tmp/cache
         tmpfs:
           size: 1000000000
+
+    # uncomment for GPU passthrough
+    # devices:
+      # replace with your GPU's path
+      # - /dev/dri/renderD129:/dev/dri/renderD129
