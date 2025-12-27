@@ -23,9 +23,13 @@ services:
 
     volumes:
       # replace with your desired config directory
-      - ${CONFIG_DIRECTORY:-/srv/frigate}:/config
+      - type: bind
+        source: ${CONFIG_DIRECTORY:-/srv/frigate}
+        target: /config
       # replace with your desired storage directory
-      - ${STORAGE_DIRECTORY:-/mnt/frigate}:/media/frigate
+      - type: bind
+        source: ${STORAGE_DIRECTORY:-/mnt/frigate}
+        target: /media/frigate
       # Optional: 1GB of memory, reduces SSD/SD Card wear
       - type: tmpfs
         target: /tmp/cache
