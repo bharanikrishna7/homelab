@@ -22,21 +22,33 @@ services:
       - "8554:8554" # RTSP feeds
 
     volumes:
-      # replace with your desired config directory
-      - type: bind
-        source: ${CONFIG_DIRECTORY:-/srv/frigate}
-        target: /config
-      # replace with your desired storage directory
-      - type: bind
-        source: ${STORAGE_DIRECTORY:-/mnt/frigate}
-        target: /media/frigate
+      # config directory configuration
+      - config-directory:/config
+      # storage volume configuration
+      - storage-directory:/media/frigate
       # Optional: 1GB of memory, reduces SSD/SD Card wear
       - type: tmpfs
         target: /tmp/cache
         tmpfs:
           size: 1000000000
+      
 
     # uncomment for GPU passthrough
     # devices:
       # replace with your GPU's path
       # - /dev/dri/renderD129:/dev/dri/renderD129
+
+volumes:
+  config-directory:
+      driver: local
+      driver_opts:
+        type: none
+        device: ${CONFIG_DIRECTORY:-/srv/frigate/}
+        o: bind
+  storage-directory:
+    driver_opts:
+      type: nfs
+      # replace with your NFS Share's IP
+      o: addr=${NFS_IP:?Mandatory property},nfsvers=4,auto,nofail,noatime,nolock,intr,tcp,actimeo=1800
+      # replace with your NFS Share's Path
+      device: ${NFS_PATH:?Mandatory property, please include :}
