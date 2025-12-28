@@ -46,6 +46,7 @@ volumes:
         device: ${CONFIG_DIRECTORY:-/srv/frigate/}
         o: bind
   storage-directory:
+    driver: local
     driver_opts:
       type: nfs
       # replace with your NFS Share's IP
