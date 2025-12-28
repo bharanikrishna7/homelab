@@ -11,11 +11,13 @@ services:
     # container hostname
     hostname: frigate
     
+    # set SHM size to enable high resolution cameras
+    shm_size: 2048mb
     # restart the container unless manually stopped
     restart: unless-stopped
     # grace period for container to stop
     stop_grace_period: 30s
-
+    
     # Ports to forward (host <-> container)
     ports:
       - "8971:8971" # WebUI
@@ -30,7 +32,7 @@ services:
       - type: tmpfs
         target: /tmp/cache
         tmpfs:
-          size: 1000000000
+          size: 2097152000
       
 
     # uncomment for GPU passthrough
@@ -43,13 +45,13 @@ volumes:
       driver: local
       driver_opts:
         type: none
-        device: ${CONFIG_DIRECTORY:-/srv/frigate/}
         o: bind
+        # replace value with actual config path
+        device: ${CONFIG_DIRECTORY:-/srv/frigate/}
   storage-directory:
     driver: local
     driver_opts:
-      type: nfs
-      # replace with your NFS Share's IP
-      o: addr=${NFS_IP:?Mandatory property},nfsvers=4,auto,nofail,noatime,nolock,intr,tcp,actimeo=1800
-      # replace with your NFS Share's Path
-      device: ${NFS_PATH:?Mandatory property, please include :}
+      type: none
+      o: bind
+      # replace value with actual storage path
+      device: ${STORAGE_DIRECTORY:-/mnt/frigate}
