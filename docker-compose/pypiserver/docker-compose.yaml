@@ -1,0 +1,26 @@
+# Docker Compose configuration for setting up PyPi Cache Server container
+# Additional info at : https://github.com/pypiserver/pypiserver/blob/main/docker-compose.yml
+#
+# pypiserver be accessible at -> http://127.0.0.1:8080
+services:
+  # PyPi server container
+  pypiserver:
+    # container image
+    image: pypiserver/pypiserver:latest
+    # container name
+    container_name: pypiserver
+    # container hostname
+    hostname: pypiserver
+
+    # restart container unless manually stopped
+    restart: unless-stopped
+    
+    # port forwarding to host from container
+    ports:
+      - 8080:8080
+    
+    # volume mapping from host(s) to container(t)
+    volumes:
+      - type: bind
+        source: /srv/packages
+        target: /data/packages
